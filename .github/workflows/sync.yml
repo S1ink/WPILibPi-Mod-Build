@@ -1,0 +1,28 @@
+name: Fork Sync
+on:
+  schedule:
+  - cron: "0 12 * * *"
+  workflow_dispatch:
+  
+env:
+  LAST_VERSION: v2022.1.1
+
+jobs:
+  get-latest:
+    runs-on: ubuntu-latest
+    outputs:
+      latest-tag: ${{ steps.latest-tag.outputs.tag }}
+    steps:
+      - run: echo '::echo::on'
+      - name: Get Latest WPILibPi Tag
+        id: latest-tag
+        run: echo "::set-output name=tag::$(curl -s https://api.github.com/repos/wpilibsuite/WPILibPi/releases/latest | jq '.tag_name' | sed 's/\"//g')"
+      - name: Confirm Version
+        run: echo "${{ steps.latest-tag.outputs.tag }} --> Updated?: ${{ env.LAST_VERSION != steps.latest-tag.outputs.tag }}"
+        
+  sync:
+    needs: get-latest
+    if: env.LATEST_VERSION != needs.get-latest.outputs.latest-tag
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "triggered sync!"    
