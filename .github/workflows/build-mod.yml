@@ -7,7 +7,7 @@ on:
   
 jobs:
   mod-build:
-    runs-on: ubutu-latest
+    runs-on: ubuntu-latest
     steps:
       - run: echo '::echo::on'
 
@@ -16,6 +16,12 @@ jobs:
         with:
           path: source
           
+      - id: last-version
+        run: echo "::set-output name=ver::$(grep 'LAST_VERSION:.*' source/.github/workflows/sync.yml | tr -s ' ' | cut -d ' ' -f2)"
+      - id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+      - run: echo ${{ steps.last-version.outputs.ver }}
+        
       - name: Get OpenCV Version
         id: opencv-tag
         run: echo "::set-output name=tag::$(grep 'https://github.com/opencv/opencv/archive/.*' source/stage3/01-sys-tweaks/01-run.sh | cut -d '/' -f7 | cut -d '.' -f1-3)"
@@ -34,10 +40,16 @@ jobs:
           name: Build
           path: source/deploy/
           
-#       - name: Create Release
-#         uses: ncipollo/release-action@main
-#         with:
-#           artifacts: 
+      - name: Create Release
+        uses: ncipollo/release-action@main
+        with:
+          artifacts: source/deploy/*.zip,source/deploy/examples/*.zip
+          allowUpdates: true
+          body: Newly built WPILib Images and Deps
+          commit: main
+          prerelease: true
+          tag: ${{ steps.last-version.outputs.ver }}_${{ steps.date.outputs.data }}
+          
           
           
         
