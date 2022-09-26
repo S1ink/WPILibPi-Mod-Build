@@ -33,7 +33,7 @@ jobs:
           token: ${{ secrets.WORKFLOW_ACCESS }}
       - run: |
           sed -i '0,/^.*LAST_VERSION:.*/s//  LAST_VERSION: ${{ needs.get-latest.outputs.latest-tag }}/' ./.github/workflows/sync.yml
-          sed -i '0,/^.*if: needs.get-latest.outputs.latest-tag !=.*/s//    if: needs.get-latest.outputs.latest-tag != \'${{ needs.get-latest.outputs.latest-tag }}\'/' ./.github/workflows/sync.yml
+          sed -i "0,/^.*if: needs.get-latest.outputs.latest-tag !=.*/s//    if: needs.get-latest.outputs.latest-tag != '${{ needs.get-latest.outputs.latest-tag }}'/" ./.github/workflows/sync.yml
           cat ./.github/workflows/sync.yml
       - uses: stefanzweifel/git-auto-commit-action@master
         with:
@@ -42,7 +42,7 @@ jobs:
           
   alternate:
     needs: get-latest
-    if: needs.get-latest.outputs.latest-tag == 'v2022.1.1'
+    if: needs.get-latest.outputs.latest-tag == 'v2021.4.1'
     runs-on: ubuntu-latest
     steps:
       - run: echo '::echo::on'
@@ -51,7 +51,7 @@ jobs:
           token: ${{ secrets.WORKFLOW_ACCESS }}
       - run: |
           sed -i '0,/^.*LAST_VERSION:.*/s//  LAST_VERSION: ${{ needs.get-latest.outputs.latest-tag }}/' ./.github/workflows/sync.yml
-          sed -i '0,/^.*if: needs.get-latest.outputs.latest-tag !=.*/s//    if: needs.get-latest.outputs.latest-tag != \'${{ needs.get-latest.outputs.latest-tag }}\'/' ./.github/workflows/sync.yml
+          sed -i "0,/^.*if: needs.get-latest.outputs.latest-tag !=.*/s//    if: needs.get-latest.outputs.latest-tag != '${{ needs.get-latest.outputs.latest-tag }}'/" ./.github/workflows/sync.yml
           cat ./.github/workflows/sync.yml
 #      - uses: stefanzweifel/git-auto-commit-action@master
 #        with:
