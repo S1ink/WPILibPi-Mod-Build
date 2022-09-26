@@ -24,7 +24,7 @@ jobs:
         
   update:
     needs: get-latest
-    if: needs.get-latest.outputs.latest-tag != 'v2022.1.1'
+    if: needs.get-latest.outputs.latest-tag != #{{ needs.get-latest.outputs.latest-tag }}
     runs-on: ubuntu-latest
     steps:
       - run: echo '::echo::on'
