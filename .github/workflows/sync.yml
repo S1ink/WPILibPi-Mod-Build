@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
   
 env:
-  LAST_VERSION: v2022.1.1
+  LAST_VERSION: v2021.4.1
 
 jobs:
   get-latest:
@@ -24,7 +24,7 @@ jobs:
         
   update:
     needs: get-latest
-    if: needs.get-latest.outputs.latest-tag != 'v2022.1.1'
+    if: needs.get-latest.outputs.latest-tag != 'v2021.4.1'
     runs-on: ubuntu-latest
     steps:
       - run: echo '::echo::on'
@@ -63,8 +63,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: echo '::echo::on'
-      - uses: tgymnich/fork-sync@master
+      - uses: aormsby/Fork-Sync-With-Upstream-action@master
         with:
-          head: main
-          base: main
-          pr_title: Sync fork ${{ env.LAST_VERSION }} --> ${{ needs.get-lates.outputs.latest-tag }}
+          target_sync_branch: main
+          target_repo_token: ${{ secrets.GITHUB_TOKEN }}
+          upstream_sync_repo: wpilibsuite/WPILibPi
+          upstream_sync_branch: main
