@@ -17,7 +17,7 @@ jobs:
           path: source
           
       - id: last-version
-        run: echo "::set-output name=ver::$(grep 'LAST_VERSION:.*' source/.github/workflows/sync.yml | tr -s ' ' | cut -d ' ' -f2)"
+        run: echo "::set-output name=ver::$(grep 'LAST_VERSION:.*' source/.github/workflows/sync.yml | tr -s ' ' | cut -d ' ' -f3)"
       - id: date
         run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
       - run: echo ${{ steps.last-version.outputs.ver }}
@@ -32,7 +32,9 @@ jobs:
       - run: cat source/stage3/01-sys-tweaks/01-run.sh
       
       - name: Docker Build
-        run: source/build-docker.sh
+        run: |
+          cd source
+          ./build-docker.sh
         
       - name: Upload Images
         uses: actions/upload-artifact@main
