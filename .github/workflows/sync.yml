@@ -29,6 +29,8 @@ jobs:
     steps:
       - run: echo '::echo::on'
       - uses: actions/checkout@main
+        with:
+          token: ${{ secrets.WORKFLOW_ACCESS }}
       - run: |
           sed -i '0,/^.*LAST_VERSION:.*/s//  LAST_VERSION: ${{ needs.get-latest.outputs.latest-tag }}/' ./.github/workflows/sync.yml
           sed -i '0,/^.*if: needs.get-latest.outputs.latest-tag !=.*/s//    if: needs.get-latest.outputs.latest-tag != ${{ needs.get-latest.outputs.latest-tag }}/' ./.github/workflows/sync.yml
@@ -45,6 +47,8 @@ jobs:
     steps:
       - run: echo '::echo::on'
       - uses: actions/checkout@main
+        with:
+          token: ${{ secrets.WORKFLOW_ACCESS }}
       - run: |
           sed -i '0,/^.*LAST_VERSION:.*/s//  LAST_VERSION: ${{ needs.get-latest.outputs.latest-tag }}/' ./.github/workflows/sync.yml
           sed -i '0,/^.*if: needs.get-latest.outputs.latest-tag !=.*/s//    if: needs.get-latest.outputs.latest-tag != #{{ needs.get-latest.outputs.latest-tag }}/' ./.github/workflows/sync.yml
