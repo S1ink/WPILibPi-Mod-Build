@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
   
 env:
-  LAST_VERSION: v2022.1.1
+  LAST_VERSION: v2021.4.1
 
 jobs:
   get-latest:
@@ -24,7 +24,7 @@ jobs:
         
   update:
     needs: get-latest
-    if: needs.get-latest.outputs.latest-tag != #{{ needs.get-latest.outputs.latest-tag }}
+    if: needs.get-latest.outputs.latest-tag != v2021.4.1
     runs-on: ubuntu-latest
     steps:
       - run: echo '::echo::on'
@@ -51,17 +51,20 @@ jobs:
           token: ${{ secrets.WORKFLOW_ACCESS }}
       - run: |
           sed -i '0,/^.*LAST_VERSION:.*/s//  LAST_VERSION: ${{ needs.get-latest.outputs.latest-tag }}/' ./.github/workflows/sync.yml
-          sed -i '0,/^.*if: needs.get-latest.outputs.latest-tag !=.*/s//    if: needs.get-latest.outputs.latest-tag != #{{ needs.get-latest.outputs.latest-tag }}/' ./.github/workflows/sync.yml
+          sed -i '0,/^.*if: needs.get-latest.outputs.latest-tag !=.*/s//    if: needs.get-latest.outputs.latest-tag != ${{ needs.get-latest.outputs.latest-tag }}/' ./.github/workflows/sync.yml
           cat ./.github/workflows/sync.yml
-      - uses: stefanzweifel/git-auto-commit-action@master
-        with:
-          commit_message: ${{ env.LAST_VERSION }} --> ${{ needs.get-latest.outputs.latest-tag }} (test)
-          tagging_message: ${{ needs.get-latest.outputs.latest-tag }}
+#      - uses: stefanzweifel/git-auto-commit-action@master
+#        with:
+#          commit_message: ${{ env.LAST_VERSION }} --> ${{ needs.get-latest.outputs.latest-tag }} (test)
+#          tagging_message: ${{ needs.get-latest.outputs.latest-tag }}
 
   sync:
     needs: [get-latest, update]
     runs-on: ubuntu-latest
     steps:
       - run: echo '::echo::on'
-      - uses: actions/checkout@main
-      - run: ls -l -R
+      - uses: tgymnich/fork-sync@master
+        with:
+          head: main
+          base: main
+          pr_title: Sync fork ${{ env.LAST_VERSION }} --> ${{ needs.get-lates.outputs.latest-tag }}
