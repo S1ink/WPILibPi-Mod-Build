@@ -1,0 +1,44 @@
+name: Build Modded WPILibPi
+on:
+  push:
+    paths-ignore:
+      - '.github/workflows/**'
+  workflow_dispatch:
+  
+jobs:
+  mod-build:
+    runs-on: ubutu-latest
+    steps:
+      - run: echo '::echo::on'
+
+      - name: Checkout
+        uses: actions/checkout@main
+        with:
+          path: source
+          
+      - name: Get OpenCV Version
+        id: opencv-tag
+        run: echo "::set-output name=tag::$(grep 'https://github.com/opencv/opencv/archive/.*' source/stage3/01-sys-tweaks/01-run.sh | cut -d '/' -f7 | cut -d '.' -f1-3)"
+        
+      - run: sed -i -e 's!^.*https://github.com/opencv/opencv/archive/${{ steps.opencv-tag.outputs.tag }}.tar.gz!&\nwget -nc -nv -O opencv-contrib.tar.gz https://github.com/opencv/opencv_contrib/archive/${{ steps.opencv-tag.outputs.tag }}.tar.gz!' source/stage3/01-sys-tweaks/01-run.sh
+      - run: sed -i -e 's!tar xzf "${DOWNLOAD_DIR}/${{ steps.opencv-tag.outputs.tag }}.tar.gz"!&\ntar xzf "${DOWNLOAD_DIR}/opencv-contrib.tar.gz"!' source/stage3/01-sys-tweaks/01-run.sh
+      - run: sed -i -e 's!^.*cmake "${EXTRACT_DIR}/opencv-${{ steps.opencv-tag.outputs.tag }}".*.*!&\n\t-DOPENCV_EXTRA_MODULES_PATH=${EXTRACT_DIR}/opencv_contrib-${{ steps.opencv-tag.outputs.tag }} \\!' source/stage3/01-sys-tweaks/01-run.sh
+      - run: cat source/stage3/01-sys-tweaks/01-run.sh
+      
+      - name: Docker Build
+        run: source/build-docker.sh
+        
+      - name: Upload Images
+        uses: actions/upload-artifact@main
+        with:
+          name: Build
+          path: source/deploy/
+          
+#       - name: Create Release
+#         uses: ncipollo/release-action@main
+#         with:
+#           artifacts: 
+          
+          
+        
+      
