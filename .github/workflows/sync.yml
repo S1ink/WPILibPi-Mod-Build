@@ -24,7 +24,8 @@ jobs:
         
   sync:
     needs: get-latest
-    if: ${{ env.LATEST_VERSION != needs.get-latest.outputs.latest-tag }}
+# JOB_CONDITIONAL_LAST_VERSION
+    if: needs.get-latest.outputs.latest-tag != v2022.1.1
     runs-on: ubuntu-latest
     steps:
       - run: echo "triggered sync!"    
