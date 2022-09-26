@@ -24,8 +24,24 @@ jobs:
         
   sync:
     needs: get-latest
-# JOB_CONDITIONAL_LAST_VERSION
     if: needs.get-latest.outputs.latest-tag != 'v2022.1.1'
     runs-on: ubuntu-latest
     steps:
-      - run: echo "triggered sync!"    
+      - run: echo '::echo::on'
+      - uses: actions/checkout@main
+      - run: |
+          sed -i 's/^.*LAST_VERSION:.*/\tLAST_VERSION: ${{ needs.get-latest.outputs.latest-tag }}/' ./.github/workflows/sync.yml
+          sed -i 's/^.*if: needs.get-latest.outputs.latest-tag !=.*/\t\tif: needs.get-latest.outputs.latest-tag != #{{ needs.get-latest.outputs.latest-tag }}/' ./.github/workflows/sync.yml
+          cat ./.github/workflows/sync.yml
+          
+  alternate:
+    needs: get-latest
+    if: needs.get-latest.outputs.latest-tag == 'v2022.1.1'
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo '::echo::on'
+      - uses: actions/checkout@main
+      - run: |
+          sed -i 's/^.*LAST_VERSION:.*/\tLAST_VERSION: ${{ needs.get-latest.outputs.latest-tag }}/' ./.github/workflows/sync.yml
+          sed -i 's/^.*if: needs.get-latest.outputs.latest-tag !=.*/\t\tif: needs.get-latest.outputs.latest-tag != #{{ needs.get-latest.outputs.latest-tag }}/' ./.github/workflows/sync.yml
+          cat ./.github/workflows/sync.yml
