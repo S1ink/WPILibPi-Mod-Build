@@ -25,7 +25,7 @@ jobs:
   sync:
     needs: get-latest
 # JOB_CONDITIONAL_LAST_VERSION
-    if: needs.get-latest.outputs.latest-tag != "v2022.1.1"
+    if: needs.get-latest.outputs.latest-tag != 'v2022.1.1'
     runs-on: ubuntu-latest
     steps:
       - run: echo "triggered sync!"    
