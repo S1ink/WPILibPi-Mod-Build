@@ -23,7 +23,7 @@ jobs:
         uses: actions/checkout@main
         with:
           ref: ${{ steps.last-version.output.ver }}
-#          path: source
+      - run: git fetch --prune --unshallow
         
       - name: Get OpenCV Version
         id: opencv-tag
