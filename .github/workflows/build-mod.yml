@@ -31,7 +31,7 @@ jobs:
         
       - run: sed -i -e 's!^.*https://github.com/opencv/opencv/archive/${{ steps.opencv-tag.outputs.tag }}.tar.gz!&\nwget -nc -nv -O opencv-contrib.tar.gz https://github.com/opencv/opencv_contrib/archive/${{ steps.opencv-tag.outputs.tag }}.tar.gz!' stage3/01-sys-tweaks/01-run.sh
       - run: sed -i -e 's!tar xzf "${DOWNLOAD_DIR}/${{ steps.opencv-tag.outputs.tag }}.tar.gz"!&\ntar xzf "${DOWNLOAD_DIR}/opencv-contrib.tar.gz"!' stage3/01-sys-tweaks/01-run.sh
-      - run: sed -i -e 's!^.*cmake "${EXTRACT_DIR}/opencv-${{ steps.opencv-tag.outputs.tag }}".*.*!&\n\t-DOPENCV_EXTRA_MODULES_PATH=${EXTRACT_DIR}/opencv_contrib-${{ steps.opencv-tag.outputs.tag }} \\!' stage3/01-sys-tweaks/01-run.sh
+      - run: sed -i -e 's!^.*cmake "${EXTRACT_DIR}/opencv-${{ steps.opencv-tag.outputs.tag }}".*.*!&\n\t-DOPENCV_EXTRA_MODULES_PATH=${EXTRACT_DIR}/opencv_contrib-${{ steps.opencv-tag.outputs.tag }}/modules/aruco \\!' stage3/01-sys-tweaks/01-run.sh
       - run: cat stage3/01-sys-tweaks/01-run.sh
       
       - name: Docker Build
