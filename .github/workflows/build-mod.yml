@@ -11,17 +11,19 @@ jobs:
     steps:
       - run: echo '::echo::on'
 
-      - name: Checkout
-        uses: actions/checkout@main
-#         with:
-#           path: source
-          
-      - run: echo "$(grep 'LAST_VERSION:.*') | $(grep 'LAST_VERSION:.*' source/.github/workflows/sync.yml | tr -s ' ') | $(grep '.*LAST_VERSION:.*.*' ./.github/workflows/sync.yml | tr -s ' ' | cut -d ' ' -f3)"
       - id: last-version
-        run: echo "::set-output name=ver::$(grep 'LAST_VERSION:.*' ./.github/workflows/sync.yml | tr -s ' ' | cut -d ' ' -f3)"
+        run: echo "::set-output name=ver::$(curl -s https://raw.githubusercontent.com/S1ink/WPILibPi-Mod-Build/main/.github/workflows/sync.yml | grep 'LAST_VERSION:.*' | tr -s ' ' | cut -d ' ' -f3)"
       - id: date
         run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
-      - run: echo ${{ steps.last-version.outputs.ver }}
+      - run: |
+          echo ${{ steps.last-version.outputs.ver }}
+          echo ${{ steps.date.outputs.date }}
+
+      - name: Checkout
+        uses: actions/checkout@main
+        with:
+          ref: ${{ steps.last-version.output.ver }}
+#          path: source
         
       - name: Get OpenCV Version
         id: opencv-tag
