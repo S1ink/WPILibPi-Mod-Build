@@ -12,12 +12,13 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       latest-tag: ${{ steps.latest-tag.outputs.tag }}
+      requires-sync: ${{ steps.latest-tag.outputs.tag != env.LAST_VERSION }}
     steps:
       - run: echo '::echo::on'
       - name: Get Latest WPILibPi Tag
         id: latest-tag
         run: echo "::set-output name=tag::$(curl -s https://api.github.com/repos/wpilibsuite/WPILibPi/releases/latest | jq '.tag_name' | sed 's/\"//g')"
-      - name: Confirm Version
+      - name: Confirm Status
         run: |
           echo "${{ steps.latest-tag.outputs.tag }}"
           echo "${{ env.LAST_VERSION != steps.latest-tag.outputs.tag }}"
@@ -25,7 +26,7 @@ jobs:
 # this is first because the replace script must come after
   alternate:
     needs: get-latest
-    if: needs.get-latest.outputs.latest-tag == 'v2022.1.1'
+    if: ${{ !needs.get-latest.outputs.requires-sync }}
     runs-on: ubuntu-latest
     steps:
       - run: echo '::echo::on'
@@ -38,7 +39,7 @@ jobs:
      
   update:
     needs: get-latest
-    if: needs.get-latest.outputs.latest-tag != 'v2022.1.1'
+    if: ${{ needs.get-latest.outputs.requires-sync }}
     runs-on: ubuntu-latest
     steps:
       - run: echo '::echo::on'
@@ -47,9 +48,9 @@ jobs:
           token: ${{ secrets.WORKFLOW_ACCESS }}
       - run: |
           sed -i '0,/^.*LAST_VERSION:.*/s//  LAST_VERSION: ${{ needs.get-latest.outputs.latest-tag }}/' ./.github/workflows/sync.yml
-          sed -i "0,/^.*if: needs.get-latest.outputs.latest-tag !=.*/s//    if: needs.get-latest.outputs.latest-tag != '${{ needs.get-latest.outputs.latest-tag }}'/" ./.github/workflows/sync.yml
-          sed -i "0,/^.*if: needs.get-latest.outputs.latest-tag ==.*/s//    if: needs.get-latest.outputs.latest-tag == '${{ needs.get-latest.outputs.latest-tag }}'/" ./.github/workflows/sync.yml
-          cat ./.github/workflows/sync.yml
+#          sed -i "0,/^.*if: needs.get-latest.outputs.latest-tag !=.*/s//    if: needs.get-latest.outputs.latest-tag != '${{ needs.get-latest.outputs.latest-tag }}'/" ./.github/workflows/sync.yml
+#          sed -i "0,/^.*if: needs.get-latest.outputs.latest-tag ==.*/s//    if: needs.get-latest.outputs.latest-tag == '${{ needs.get-latest.outputs.latest-tag }}'/" ./.github/workflows/sync.yml
+#          cat ./.github/workflows/sync.yml
       - uses: stefanzweifel/git-auto-commit-action@master
         with:
           commit_message: ${{ env.LAST_VERSION }} --> ${{ needs.get-latest.outputs.latest-tag }}
