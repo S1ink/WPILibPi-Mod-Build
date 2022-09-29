@@ -47,22 +47,43 @@ jobs:
         run: |
           ls -l
           ./build-docker.sh
+          
+      - name: Package C++ Deps
+        run: |
+          sudo apt-get install {zip,unzip}
+          mkdir {cpp-deps,cpp-deps-extract}
+          unzip deploy/examples/cpp-multiCameraServer.zip -d cpp-deps-extract
+          cp -R cpp-deps-extract/cpp-multiCameraServer/{lib,include} cpp-deps
+          zip -r cpp-deps.zip cpp-deps
+          mv cpp-deps.zip deploy
         
       - name: Upload Images
         uses: actions/upload-artifact@main
         with:
           name: Build
           path: deploy/
-          
-      - name: Create Release
+        
+#always push artifacts to 'latest', push to VERSION if on sync
+      - name: Update Latest
         uses: ncipollo/release-action@main
         with:
           artifacts: deploy/*.zip,deploy/examples/*.zip
           allowUpdates: true
-          body: Newly built WPILib Images and Deps
+          body: |
+            Build Date: ${{ steps.date.outputs.date }}
+            WPILibPi Version: ${{ steps.last-version.outputs.ver }}
+            OpenCV Version: ${{ steps.opencv-tag.outputs.tag }}
           commit: main
-          prerelease: true
-          tag: ${{ steps.last-version.outputs.ver }}_${{ steps.date.outputs.data }}
+          prerelease: false
+          tag: Latest-Deps
+          
+      - name: Update Version
+        uses: ncipollo/release-action@main
+        with:
+          artifacts: deploy/*.zip,deploy/examples/*.zip
+          body: |
+            Last Modified: ${{ steps.date.outputs.date }}
+          tag: ${{ steps.last-version.outputs.ver }}
           
           
           
