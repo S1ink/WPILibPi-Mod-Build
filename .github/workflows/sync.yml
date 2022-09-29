@@ -29,7 +29,7 @@ jobs:
 # this is first because the replace script must come after
   alternate:
     needs: get-latest
-    if: ${{ needs.get-latest.outputs.requires-sync == false }}
+    if: ${{ needs.get-latest.outputs.requires-sync == 'false' }}
     runs-on: ubuntu-latest
     steps:
       - run: echo '::echo::on'
@@ -42,7 +42,7 @@ jobs:
      
   update:
     needs: get-latest
-    if: ${{ needs.get-latest.outputs.requires-sync == true }}
+    if: ${{ needs.get-latest.outputs.requires-sync == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - run: echo '::echo::on'
