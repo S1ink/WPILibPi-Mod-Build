@@ -49,8 +49,21 @@ ROOT_LENGTH=$(echo "$PARTED_OUT" | grep -e '^2:' | cut -d':' -f 4 | tr -d B)
 #    rm virtualfs$i
 #done
 
-BOOT_DEV=$(losetup --show -f -o "${BOOT_OFFSET}" --sizelimit "${BOOT_LENGTH}" "${IMG_FILE}")
-ROOT_DEV=$(losetup --show -f -o "${ROOT_OFFSET}" --sizelimit "${ROOT_LENGTH}" "${IMG_FILE}")
+# BOOT_DEV=$(losetup --show -f -o "${BOOT_OFFSET}" --sizelimit "${BOOT_LENGTH}" "${IMG_FILE}")
+# ROOT_DEV=$(losetup --show -f -o "${ROOT_OFFSET}" --sizelimit "${ROOT_LENGTH}" "${IMG_FILE}")
+# Line 55-65: https://gitlab.com/openflexure/pi-gen/blob/8f2539d4f701c623d888a435da418991a411ef5f/export-image/prerun.sh#L43-L53
+echo "Mounting BOOT_DEV..."
+until BOOT_DEV=$(LOOPDEV_DEBUG=all losetup --show -f -o "${BOOT_OFFSET}" --sizelimit "${BOOT_LENGTH}" "${IMG_FILE}"); do
+	echo "Error in loseup for BOOT_DEV. Retrying..."
+	sleep 5
+done
+
+echo "Mounting ROOT_DEV..."
+until ROOT_DEV=$(LOOPDEV_DEBUG=all losetup --show -f -o "${ROOT_OFFSET}" --sizelimit "${ROOT_LENGTH}" "${IMG_FILE}"); do
+	echo "Error in loseup for ROOT_DEV. Retrying..."
+	sleep 5
+done
+
 echo "/boot: offset $BOOT_OFFSET, length $BOOT_LENGTH"
 echo "/:     offset $ROOT_OFFSET, length $ROOT_LENGTH"
 
