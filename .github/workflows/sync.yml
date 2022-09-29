@@ -12,16 +12,19 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       latest-tag: ${{ steps.latest-tag.outputs.tag }}
-      requires-sync: ${{ steps.latest-tag.outputs.tag != env.LAST_VERSION }}
+      requires-sync: ${{ steps.sync.outputs.value }}
     steps:
       - run: echo '::echo::on'
       - name: Get Latest WPILibPi Tag
         id: latest-tag
         run: echo "::set-output name=tag::$(curl -s https://api.github.com/repos/wpilibsuite/WPILibPi/releases/latest | jq '.tag_name' | sed 's/\"//g')"
+      - name: Evaluate
+        id: sync
+        run: echo "::set-output name=value::${{ steps.latest-tag.outputs.tag != env.LAST_VERSION }}"
       - name: Confirm Status
         run: |
           echo "${{ steps.latest-tag.outputs.tag }}"
-          echo "${{ env.LAST_VERSION != steps.latest-tag.outputs.tag }}"
+          echo "${{ steps.sync.outputs.value }}"
      
 # this is first because the replace script must come after
   alternate:
