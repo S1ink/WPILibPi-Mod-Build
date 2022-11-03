@@ -17,10 +17,10 @@ jobs:
       - run: echo '::echo::on'
       - name: Get Latest WPILibPi Tag
         id: latest-tag
-        run: echo "::set-output name=tag::$(curl -s https://api.github.com/repos/wpilibsuite/WPILibPi/releases/latest | jq '.tag_name' | sed 's/\"//g')"
+        run: echo "tag=$(curl -s https://api.github.com/repos/wpilibsuite/WPILibPi/releases/latest | jq '.tag_name' | sed 's/\"//g')" >> $GITHUB_OUTPUT
       - name: Evaluate
         id: sync
-        run: echo "::set-output name=value::${{ steps.latest-tag.outputs.tag != env.LAST_VERSION }}"
+        run: echo "value=${{ steps.latest-tag.outputs.tag != env.LAST_VERSION }}" >> $GITHUB_OUTPUT
       - name: Confirm Status
         run: |
           echo "${{ steps.latest-tag.outputs.tag }}"
