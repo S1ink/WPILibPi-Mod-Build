@@ -48,6 +48,7 @@ jobs:
           ls -l
           sudo apt-get install binfmt-support
           sudo modprobe binfmt_misc
+          grep binfmt /proc/mounts
           ./build-docker.sh
           
       - name: Package C++ Deps
