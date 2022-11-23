@@ -28,7 +28,9 @@ dependencies_check()
 		false
 	fi
 
-
+	if ! grep -q "/proc/sys/fs/binfmt_misc" /proc/mounts; then
+		echo "$(sudo modprobe binfmt_misc)"
+	fi
 	if ! grep -q "/proc/sys/fs/binfmt_misc" /proc/mounts; then
 		echo "Module binfmt_misc not loaded in host"
 		echo "Please run:"
