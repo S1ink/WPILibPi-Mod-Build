@@ -46,6 +46,7 @@ jobs:
       - name: Docker Build
         run: |
           ls -l
+          modprobe binfmt_misc
           ./build-docker.sh
           
       - name: Package C++ Deps
