@@ -46,6 +46,7 @@ jobs:
       - name: Docker Build
         run: |
           ls -l
+          sudo apt-get install binfmt-support
           sudo modprobe binfmt_misc
           ./build-docker.sh
           
