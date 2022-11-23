@@ -30,7 +30,7 @@ do
 	esac
 done
 
-IMG_VERSION=${IMG_VERSION:-$(git describe)}
+IMG_VERSION=${IMG_VERSION:-v2023-beta1}	#$(git describe)
 
 # Ensure that the configuration file is an absolute path
 if test -x /usr/bin/realpath; then
