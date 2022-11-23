@@ -42,7 +42,8 @@ pushd ${DOWNLOAD_DIR}
 
 # raspbian toolchain
 wget -nc -nv \
-    https://github.com/wpilibsuite/raspbian-toolchain/releases/download/v2.1.0/Raspbian10-Linux-i386-Toolchain-8.3.0.tar.gz
+    https://github.com/wpilibsuite/opensdk/releases/download/v2023-7/armhf-raspi-bullseye-2023-i686-linux-gnu-Toolchain-10.2.0.tgz
+#    https://github.com/wpilibsuite/raspbian-toolchain/releases/download/v2.1.0/Raspbian10-Linux-i386-Toolchain-8.3.0.tar.gz
 
 # opencv sources
 wget -nc -nv \
@@ -50,7 +51,7 @@ wget -nc -nv \
 
 # allwpilib
 wget -nc -nv -O allwpilib.tar.gz \
-    https://github.com/wpilibsuite/allwpilib/archive/v2023.1.1-beta-2.tar.gz
+    https://github.com/wpilibsuite/allwpilib/archive/v2023.1.1-beta-4.tar.gz
 
 # pynetworktables
 wget -nc -nv -O pynetworktables.tar.gz \
@@ -127,8 +128,8 @@ NCPU=`grep -c 'cpu[0-9]' /proc/stat`
 
 # extract raspbian toolchain
 pushd ${WORK_DIR}
-tar xzf ${DOWNLOAD_DIR}/Raspbian10-Linux-i386-Toolchain-*.tar.gz
-export PATH=${WORK_DIR}/raspbian10/bin:${PATH}
+tar xzf ${DOWNLOAD_DIR}/armhf-raspi-bullseye-*.tar.gz
+export PATH=${WORK_DIR}/raspi-bullseye/bin:${PATH}
 popd
 
 export PKG_CONFIG_DIR=
@@ -366,9 +367,9 @@ rm -rf "${EXTRACT_DIR}/pixy2/build"
 # Split debug info
 
 split_debug () {
-    arm-raspbian10-linux-gnueabihf-objcopy --only-keep-debug $1 $1.debug
-    arm-raspbian10-linux-gnueabihf-strip -g $1
-    arm-raspbian10-linux-gnueabihf-objcopy --add-gnu-debuglink=$1.debug $1
+    armv6-bullseye-linux-gnueabihf-objcopy --only-keep-debug $1 $1.debug
+    armv6-bullseye-linux-gnueabihf-strip -g $1
+    armv6-bullseye-linux-gnueabihf-objcopy --add-gnu-debuglink=$1.debug $1
 }
 
 split_debug_so () {

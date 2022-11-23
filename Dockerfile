@@ -1,4 +1,4 @@
-ARG BASE_IMAGE=i386/debian:buster
+ARG BASE_IMAGE=i386/debian:bullseye
 FROM ${BASE_IMAGE}
 
 ENV DEBIAN_FRONTEND noninteractive
