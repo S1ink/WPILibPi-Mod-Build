@@ -19,7 +19,7 @@ sh -c "cd ${BASE_DIR}/deps && tar cf - tools" | \
 #
 # Build tools
 #
-export PATH=${WORK_DIR}/raspbian10/bin:${PATH}
+export PATH=${WORK_DIR}/raspi-bullseye/bin:${PATH}
 
 pushd "${STAGE_WORK_DIR}/tools"
 

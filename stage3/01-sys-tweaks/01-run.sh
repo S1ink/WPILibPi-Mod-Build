@@ -128,7 +128,7 @@ NCPU=`grep -c 'cpu[0-9]' /proc/stat`
 
 # extract raspbian toolchain
 pushd ${WORK_DIR}
-tar xzf ${DOWNLOAD_DIR}/armhf-raspi-bullseye-*.tar.gz
+tar xzf ${DOWNLOAD_DIR}/armhf-raspi-bullseye-*.tgz
 export PATH=${WORK_DIR}/raspi-bullseye/bin:${PATH}
 popd
 
@@ -148,7 +148,7 @@ build_opencv () {
 	-DWITH_FFMPEG=OFF \
         -DBUILD_JPEG=ON \
         -DBUILD_TESTS=OFF \
-        -DPython_ADDITIONAL_VERSIONS=3.7 \
+        -DPython_ADDITIONAL_VERSIONS=3.9 \
         -DBUILD_JAVA=$3 \
         -DENABLE_CXX11=ON \
         -DBUILD_SHARED_LIBS=$3 \
@@ -160,8 +160,8 @@ build_opencv () {
         -DENABLE_NEON=ON \
         -DENABLE_VFPV3=ON \
         -DBUILD_opencv_python3=$3 \
-        -DPYTHON3_INCLUDE_PATH=${ROOTFS_DIR}/usr/include/python3.7m \
-        -DPYTHON3_NUMPY_INCLUDE_DIRS=${ROOTFS_DIR}/usr/include/python3.7m/numpy \
+        -DPYTHON3_INCLUDE_PATH=${ROOTFS_DIR}/usr/include/python3.9m \
+        -DPYTHON3_NUMPY_INCLUDE_DIRS=${ROOTFS_DIR}/usr/include/python3.9m/numpy \
         -DOPENCV_EXTRA_FLAGS_DEBUG=-Og \
 	-DOPENCV_GENERATE_PKGCONFIG=ON \
         -DCMAKE_MODULE_PATH=${SUB_STAGE_DIR}/files \
@@ -183,13 +183,13 @@ cp -p "${ROOTFS_DIR}/usr/local/frc/share/java/opencv4/opencv-460.jar" "${ROOTFS_
 
 # the opencv build names the python .so with the build platform name
 # instead of the target platform, so rename it
-pushd "${ROOTFS_DIR}/usr/local/frc/lib/python3.7/dist-packages/cv2/python-3.7"
-mv cv2.cpython-37m-*-gnu.so cv2.cpython-37m-arm-linux-gnueabihf.so
-mv cv2d.cpython-37m-*-gnu.so cv2d.cpython-37m-arm-linux-gnueabihf.so
+pushd "${ROOTFS_DIR}/usr/local/frc/lib/python3.9/dist-packages/cv2/python-3.9"
+mv cv2.cpython-39m-*-gnu.so cv2.cpython-39m-arm-linux-gnueabihf.so
+mv cv2d.cpython-39m-*-gnu.so cv2d.cpython-39m-arm-linux-gnueabihf.so
 popd
 
 # link python package to dist-packages
-ln -sf /usr/local/frc/lib/python3.7/dist-packages/cv2 "${ROOTFS_DIR}/usr/local/lib/python3.7/dist-packages/cv2"
+ln -sf /usr/local/frc/lib/python3.9/dist-packages/cv2 "${ROOTFS_DIR}/usr/local/lib/python3.9/dist-packages/cv2"
 
 #
 # Build wpiutil, cscore, ntcore, cameraserver
@@ -307,7 +307,7 @@ popd
 # Install pynetworktables
 #
 
-#sh -c "cd ${EXTRACT_DIR}/pynetworktables && tar cf - networktables ntcore" | sh -c "cd ${ROOTFS_DIR}/usr/local/lib/python3.7/dist-packages/ && tar xf -"
+#sh -c "cd ${EXTRACT_DIR}/pynetworktables && tar cf - networktables ntcore" | sh -c "cd ${ROOTFS_DIR}/usr/local/lib/python3.9/dist-packages/ && tar xf -"
 on_chroot << EOF
 pip3 install setuptools
 pushd /usr/src/pynetworktables
@@ -326,16 +326,16 @@ pushd ${EXTRACT_DIR}/robotpy-cscore
 
 # install Python sources
 sh -c 'tar cf - cscore' | \
-    sh -c "cd ${ROOTFS_DIR}/usr/local/lib/python3.7/dist-packages && tar xf -"
+    sh -c "cd ${ROOTFS_DIR}/usr/local/lib/python3.9/dist-packages && tar xf -"
 
 # install blank _init_cscore.py
-touch "${ROOTFS_DIR}/usr/local/lib/python3.7/dist-packages/cscore/_init_cscore.py"
+touch "${ROOTFS_DIR}/usr/local/lib/python3.9/dist-packages/cscore/_init_cscore.py"
 
 # build module
 arm-raspbian10-linux-gnueabihf-g++ \
     --sysroot=${ROOTFS_DIR} \
     -g -O -Wall -fvisibility=hidden -shared -fPIC -std=c++17 \
-    -o "${ROOTFS_DIR}/usr/local/lib/python3.7/dist-packages/_cscore.cpython-37m-arm-linux-gnueabihf.so" \
+    -o "${ROOTFS_DIR}/usr/local/lib/python3.9/dist-packages/_cscore.cpython-39m-arm-linux-gnueabihf.so" \
     -Ipybind11/include \
     `env PKG_CONFIG_LIBDIR=${PKG_CONFIG_LIBDIR}:${ROOTFS_DIR}/usr/local/frc/lib/pkgconfig pkg-config --cflags python3 cscore wpiutil` \
     src/_cscore.cpp \
@@ -356,8 +356,8 @@ popd
 EOF
 
 install -m 644 "${EXTRACT_DIR}/pixy2/build/libpixyusb2/libpixy2.a" "${ROOTFS_DIR}/usr/local/frc/lib/"
-install -m 644 "${EXTRACT_DIR}/pixy2/build/python_demos/pixy.py" "${ROOTFS_DIR}/usr/local/lib/python3.7/dist-packages/"
-install -m 755 ${EXTRACT_DIR}/pixy2/build/python_demos/_pixy.*.so "${ROOTFS_DIR}/usr/local/lib/python3.7/dist-packages/"
+install -m 644 "${EXTRACT_DIR}/pixy2/build/python_demos/pixy.py" "${ROOTFS_DIR}/usr/local/lib/python3.9/dist-packages/"
+install -m 755 ${EXTRACT_DIR}/pixy2/build/python_demos/_pixy.*.so "${ROOTFS_DIR}/usr/local/lib/python3.9/dist-packages/"
 rm -rf "${EXTRACT_DIR}/pixy2/build"
 
 #
