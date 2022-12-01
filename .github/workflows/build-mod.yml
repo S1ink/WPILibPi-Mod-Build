@@ -42,8 +42,11 @@ jobs:
       - run: sed -i -e 's!^.*cmake "${EXTRACT_DIR}/opencv-${{ steps.opencv-tag.outputs.tag }}".*.*!&\n\t-DOPENCV_EXTRA_MODULES_PATH=${EXTRACT_DIR}/opencv_contrib-${{ steps.opencv-tag.outputs.tag }}/modules/aruco \\!' stage3/01-sys-tweaks/01-run.sh
       - run: cat stage3/01-sys-tweaks/01-run.sh
       
-      - name: Docker Build
+      - name: Install Deps & Docker Build
         run: |
+          sudo apt-get update
+          sudo apt-get --no-install-recommends --no-install-suggests install -y binfmt-support qemu-user-static qemu-utils nbd-server nbd-client
+          sudo modprobe -a binfmt_misc nbd
           ls -l
           grep binfmt /proc/mounts
           ./build-docker.sh
