@@ -132,20 +132,20 @@ tar xzf ${DOWNLOAD_DIR}/armhf-raspi-bullseye-*.tgz
 export PATH=${WORK_DIR}/raspi-bullseye/bin:${PATH}
 popd
 
-echo "*********************************"
-echo $(cd /usr/bin; ls -l)
-echo $(cd /usr/sbin; ls -l)
-echo $(cd /opt/bin; ls -l)
-echo $(cd /opt/sbin; ls -l)
-echo "*********************************"
-echo $(g++ --version)
-echo $(/usr/bin/g++ --version)
-echo $(grep g++)
-echo $(ldd g++)
-echo $(ldd /usr/bin/g++)
-echo $(ldd $(grep g++))
-echo $(ldd ${WORK_DIR}/raspi-bullseye/bin/armv6-bullseye-linux-gnueabihf-g++)
-echo "*********************************"
+# echo "*********************************"
+# echo $(cd /usr/bin; ls -l)
+# echo $(cd /usr/sbin; ls -l)
+# echo $(cd /opt/bin; ls -l)
+# echo $(cd /opt/sbin; ls -l)
+# echo "*********************************"
+# echo $(g++ --version)
+# echo $(/usr/bin/g++ --version)
+# echo $(grep g++)
+# echo $(ldd g++)
+# echo $(ldd /usr/bin/g++)
+# echo $(ldd $(grep g++))
+# echo $(ldd ${WORK_DIR}/raspi-bullseye/bin/armv6-bullseye-linux-gnueabihf-g++)
+# echo "*********************************"
 
 export PKG_CONFIG_DIR=
 export PKG_CONFIG_LIBDIR=${ROOTFS_DIR}/usr/lib/arm-linux-gnueabihf/pkgconfig:${ROOTFS_DIR}/usr/lib/pkgconfig:${ROOTFS_DIR}/usr/share/pkgconfig

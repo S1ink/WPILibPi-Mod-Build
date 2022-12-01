@@ -3,7 +3,7 @@ if(COMMAND toolchain_save_config)
 endif()
 
 set(GCC_COMPILER_VERSION "" CACHE STRING "GCC Compiler version")
-set(GNU_MACHINE "armv6-bullseye-linux-gnueabi" CACHE STRING "GNU compiler triple")
+set(GNU_MACHINE "arm-linux-gnueabi" CACHE STRING "GNU compiler triple")
 set(SOFTFP no)
 set(FLOAT_ABI_SUFFIX "hf")
 set(CMAKE_SYSTEM_NAME Linux)
