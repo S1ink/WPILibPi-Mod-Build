@@ -133,7 +133,13 @@ export PATH=${WORK_DIR}/raspi-bullseye/bin:${PATH}
 popd
 
 echo "*********************************"
+echo $(cd /usr/bin; ls -l)
+echo $(cd /usr/sbin; ls -l)
+echo $(cd /opt/bin; ls -l)
+echo $(cd /opt/sbin; ls -l)
+echo "*********************************"
 echo $(g++ --version)
+echo $(/usr/bin/g++ --version)
 echo $(grep g++)
 echo $(ldd g++)
 echo $(ldd /usr/bin/g++)
