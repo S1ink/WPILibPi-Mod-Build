@@ -135,6 +135,8 @@ popd
 echo "*********************************"
 echo $(g++ --version)
 echo $(grep g++)
+echo $(ldd g++)
+echo $(ldd /usr/bin/g++)
 echo $(ldd $(grep g++))
 echo $(ldd ${WORK_DIR}/raspi-bullseye/bin/armv6-bullseye-linux-gnueabihf-g++)
 echo "*********************************"
