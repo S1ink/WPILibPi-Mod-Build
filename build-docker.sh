@@ -123,6 +123,7 @@ else
 		pi-gen \
 		bash -e -o pipefail -c "dpkg-reconfigure qemu-user-static &&
 	(mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc || true) &&
+	echo '*************************' && arm-linux-gnueabihf-g++ --version && arm-linux-gnueabihf-g++-10 --version && echo '*************************'
 	cd /pi-gen; ./build.sh ${BUILD_OPTS} &&
 	rsync -av work/*/build.log deploy/" &
 	wait "$!"
