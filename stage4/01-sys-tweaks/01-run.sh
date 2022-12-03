@@ -90,7 +90,7 @@ done
 
 # update Makefile to use cross-compiler and point to local dependencies
 cat > cpp-multiCameraServer/Makefile.new << EOF
-CXX=arm-raspbian10-linux-gnueabihf-g++
+CXX=arm-linux-gnueabihf-g++-10
 DEPS_CFLAGS=`pkg-config --cflags wpilibc | sed -e "s,${ROOTFS_DIR}/usr/local/frc/,,g"`
 DEPS_LIBS=`pkg-config --libs wpilibc | sed -e "s,${ROOTFS_DIR}/usr/local/frc/,,g"`
 EOF

@@ -33,12 +33,6 @@ popd
 #
 ln -sf arm-linux-gnueabihf/cblas.h "${ROOTFS_DIR}/usr/include/cblas.h"
 
-echo "******************************"
-$(cd ${ROOTFS_DIR}/usr/lib; ls -l -R)
-$(cd ${ROOTFS_DIR}/usr/include; ls -l -R)
-find ${ROOTFS_DIR}/usr/include -name Python.h
-echo "******************************"
-
 #
 # Download sources
 #
@@ -57,7 +51,9 @@ wget -nc -nv \
 
 # allwpilib
 wget -nc -nv -O allwpilib.tar.gz \
-    https://github.com/wpilibsuite/allwpilib/archive/v2023.1.1-beta-4.tar.gz
+    https://github.com/wpilibsuite/allwpilib/archive/v2023.1.1-beta-3.tar.gz
+#    https://github.com/wpilibsuite/allwpilib/archive/6e23985ae612c396958dfebed3aa25d1f09ec538.tar.gz
+#    https://github.com/wpilibsuite/allwpilib/archive/v2023.1.1-beta-4.tar.gz
 
 # pynetworktables
 wget -nc -nv -O pynetworktables.tar.gz \
@@ -189,13 +185,13 @@ cp -p "${ROOTFS_DIR}/usr/local/frc/share/java/opencv4/opencv-460.jar" "${ROOTFS_
 
 # the opencv build names the python .so with the build platform name
 # instead of the target platform, so rename it
-pushd "${ROOTFS_DIR}/usr/local/frc/lib/python3.9/dist-packages/cv2/python-3.9"
-mv cv2.cpython-39m-*-gnu.so cv2.cpython-39m-arm-linux-gnueabihf.so
-mv cv2d.cpython-39m-*-gnu.so cv2d.cpython-39m-arm-linux-gnueabihf.so
+pushd "${ROOTFS_DIR}/usr/local/frc/lib/python3.9/site-packages/cv2/python-3.9"
+mv cv2.cpython-39-*-gnu.so cv2.cpython-39-arm-linux-gnueabihf.so
+mv cv2d.cpython-39-*-gnu.so cv2d.cpython-39-arm-linux-gnueabihf.so
 popd
 
 # link python package to dist-packages
-ln -sf /usr/local/frc/lib/python3.9/dist-packages/cv2 "${ROOTFS_DIR}/usr/local/lib/python3.9/dist-packages/cv2"
+ln -sf /usr/local/frc/lib/python3.9/site-packages/cv2 "${ROOTFS_DIR}/usr/local/lib/python3.9/site-packages/cv2"
 
 #
 # Build wpiutil, cscore, ntcore, cameraserver
@@ -332,16 +328,16 @@ pushd ${EXTRACT_DIR}/robotpy-cscore
 
 # install Python sources
 sh -c 'tar cf - cscore' | \
-    sh -c "cd ${ROOTFS_DIR}/usr/local/lib/python3.9/dist-packages && tar xf -"
+    sh -c "cd ${ROOTFS_DIR}/usr/local/lib/python3.9/site-packages && tar xf -"
 
 # install blank _init_cscore.py
-touch "${ROOTFS_DIR}/usr/local/lib/python3.9/dist-packages/cscore/_init_cscore.py"
+touch "${ROOTFS_DIR}/usr/local/lib/python3.9/site-packages/cscore/_init_cscore.py"
 
 # build module
-arm-raspbian10-linux-gnueabihf-g++ \
+arm-linux-gnueabihf-g++-10 \
     --sysroot=${ROOTFS_DIR} \
     -g -O -Wall -fvisibility=hidden -shared -fPIC -std=c++17 \
-    -o "${ROOTFS_DIR}/usr/local/lib/python3.9/dist-packages/_cscore.cpython-39m-arm-linux-gnueabihf.so" \
+    -o "${ROOTFS_DIR}/usr/local/lib/python3.9/site-packages/_cscore.cpython-39-arm-linux-gnueabihf.so" \
     -Ipybind11/include \
     `env PKG_CONFIG_LIBDIR=${PKG_CONFIG_LIBDIR}:${ROOTFS_DIR}/usr/local/frc/lib/pkgconfig pkg-config --cflags python3 cscore wpiutil` \
     src/_cscore.cpp \
