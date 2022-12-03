@@ -5,7 +5,6 @@ echo "deb https://packages.cloud.google.com/apt coral-edgetpu-stable main" > "${
 
 #wget -O- https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo tee /etc/apt/trusted.gpg.d/coral-edgetpu.gpg
 #cat files/edgetpu.gpg > "${ROOTFS_DIR}/etc/apt/trusted.gpg.d/coral-edgetpu.gpg"
-sudo apt-key adv
 on_chroot apt-key add - < files/edgetpu.gpg
 on_chroot << EOF
 apt-get update
