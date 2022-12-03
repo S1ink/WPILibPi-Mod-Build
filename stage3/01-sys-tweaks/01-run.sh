@@ -51,8 +51,8 @@ wget -nc -nv \
 
 # allwpilib
 wget -nc -nv -O allwpilib.tar.gz \
-    https://github.com/wpilibsuite/allwpilib/archive/6e23985ae612c396958dfebed3aa25d1f09ec538.tar.gz
-#    https://github.com/wpilibsuite/allwpilib/archive/v2023.1.1-beta-3.tar.gz
+    https://github.com/wpilibsuite/allwpilib/archive/v2023.1.1-beta-3.tar.gz
+#    https://github.com/wpilibsuite/allwpilib/archive/6e23985ae612c396958dfebed3aa25d1f09ec538.tar.gz
 #    https://github.com/wpilibsuite/allwpilib/archive/v2023.1.1-beta-4.tar.gz
 
 # pynetworktables
@@ -95,6 +95,7 @@ tar xzf "${DOWNLOAD_DIR}/allwpilib.tar.gz"
 mv allwpilib-* allwpilib
 pushd allwpilib
 sed -i -e 's/add_subdirectory(fieldImages)//' CMakeLists.txt
+sed -i -e 's/-Werror/-Werror -Wno-error=deprecated-declarations/' cmake/modules/CompileWarnings.cmake
 popd
 
 # pynetworktables
