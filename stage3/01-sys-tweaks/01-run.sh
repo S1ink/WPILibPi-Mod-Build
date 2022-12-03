@@ -166,7 +166,7 @@ build_opencv () {
         -DENABLE_NEON=ON \
         -DENABLE_VFPV3=ON \
         -DBUILD_opencv_python3=$3 \
-        -DPYTHON3_INCLUDE_PATH=${ROOTFS_DIR}/usr/include/python3.9m \
+        -DPYTHON3_INCLUDE_PATH=${ROOTFS_DIR}/usr/include/python3.9 \
         -DPYTHON3_NUMPY_INCLUDE_DIRS=${ROOTFS_DIR}/usr/include/python3.9m/numpy \
         -DOPENCV_EXTRA_FLAGS_DEBUG=-Og \
 	-DOPENCV_GENERATE_PKGCONFIG=ON \
