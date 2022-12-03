@@ -191,7 +191,7 @@ mv cv2d.cpython-39-*-gnu.so cv2d.cpython-39-arm-linux-gnueabihf.so
 popd
 
 # link python package to dist-packages
-ln -sf /usr/local/frc/lib/python3.9/site-packages/cv2 "${ROOTFS_DIR}/usr/local/lib/python3.9/site-packages/cv2"
+ln -sf /usr/local/frc/lib/python3.9/site-packages/cv2 "${ROOTFS_DIR}/usr/local/lib/python3.9/dist-packages/cv2"
 
 #
 # Build wpiutil, cscore, ntcore, cameraserver
@@ -328,16 +328,16 @@ pushd ${EXTRACT_DIR}/robotpy-cscore
 
 # install Python sources
 sh -c 'tar cf - cscore' | \
-    sh -c "cd ${ROOTFS_DIR}/usr/local/lib/python3.9/site-packages && tar xf -"
+    sh -c "cd ${ROOTFS_DIR}/usr/local/lib/python3.9/dist-packages && tar xf -"
 
 # install blank _init_cscore.py
-touch "${ROOTFS_DIR}/usr/local/lib/python3.9/site-packages/cscore/_init_cscore.py"
+touch "${ROOTFS_DIR}/usr/local/lib/python3.9/dist-packages/cscore/_init_cscore.py"
 
 # build module
 arm-linux-gnueabihf-g++-10 \
     --sysroot=${ROOTFS_DIR} \
     -g -O -Wall -fvisibility=hidden -shared -fPIC -std=c++17 \
-    -o "${ROOTFS_DIR}/usr/local/lib/python3.9/site-packages/_cscore.cpython-39-arm-linux-gnueabihf.so" \
+    -o "${ROOTFS_DIR}/usr/local/lib/python3.9/dist-packages/_cscore.cpython-39-arm-linux-gnueabihf.so" \
     -Ipybind11/include \
     `env PKG_CONFIG_LIBDIR=${PKG_CONFIG_LIBDIR}:${ROOTFS_DIR}/usr/local/frc/lib/pkgconfig pkg-config --cflags python3 cscore wpiutil` \
     src/_cscore.cpp \
