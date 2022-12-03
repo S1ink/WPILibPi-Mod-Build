@@ -33,6 +33,12 @@ popd
 #
 ln -sf arm-linux-gnueabihf/cblas.h "${ROOTFS_DIR}/usr/include/cblas.h"
 
+echo "******************************"
+$(cd ${ROOTFS_DIR}/usr/lib; ls -l -R)
+$(cd ${ROOTFS_DIR}/usr/include; ls -l -R)
+find ${ROOTFS_DIR}/usr/include -name Python.h
+echo "******************************"
+
 #
 # Download sources
 #
@@ -367,9 +373,9 @@ rm -rf "${EXTRACT_DIR}/pixy2/build"
 # Split debug info
 
 split_debug () {
-    armv6-bullseye-linux-gnueabihf-objcopy --only-keep-debug $1 $1.debug
-    armv6-bullseye-linux-gnueabihf-strip -g $1
-    armv6-bullseye-linux-gnueabihf-objcopy --add-gnu-debuglink=$1.debug $1
+    arm-linux-gnueabihf-objcopy --only-keep-debug $1 $1.debug
+    arm-linux-gnueabihf-strip -g $1
+    arm-linux-gnueabihf-objcopy --add-gnu-debuglink=$1.debug $1
 }
 
 split_debug_so () {
