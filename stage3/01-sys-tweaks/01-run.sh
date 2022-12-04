@@ -261,25 +261,56 @@ sh -c 'cd build/allwpilib-build/jar && tar cf - *.jar' | \
     sh -c "cd ${ROOTFS_DIR}/usr/local/frc/java && tar xf -"
 
 # headers
-sh -c "cd ${EXTRACT_DIR}/allwpilib/wpiutil/src/main/native/include && tar cf - ." | \
+#apriltag
+sh -c "cd ${EXTRACT_DIR}/allwpilib/apriltag/src/main/native/include && tar cf - ." | \
     sh -c "cd ${ROOTFS_DIR}/usr/local/frc/include && tar xf -"
-sh -c "cd ${EXTRACT_DIR}/allwpilib/wpiutil/src/main/native/fmtlib/include && tar cf - ." | \
-    sh -c "cd ${ROOTFS_DIR}/usr/local/frc/include && tar xf -"
-sh -c "cd ${EXTRACT_DIR}/allwpilib/wpiutil/src/main/native/libuv/include && tar cf - ." | \
-    sh -c "cd ${ROOTFS_DIR}/usr/local/frc/include && tar xf -"
-sh -c "cd ${EXTRACT_DIR}/allwpilib/cscore/src/main/native/include && tar cf - ." | \
-    sh -c "cd ${ROOTFS_DIR}/usr/local/frc/include && tar xf -"
-sh -c "cd ${EXTRACT_DIR}/allwpilib/ntcore/src/main/native/include && tar cf - ." | \
-    sh -c "cd ${ROOTFS_DIR}/usr/local/frc/include && tar xf -"
+#cameraserver
 sh -c "cd ${EXTRACT_DIR}/allwpilib/cameraserver/src/main/native/include && tar cf - ." | \
     sh -c "cd ${ROOTFS_DIR}/usr/local/frc/include && tar xf -"
+#cscore
+sh -c "cd ${EXTRACT_DIR}/allwpilib/cscore/src/main/native/include && tar cf - ." | \
+    sh -c "cd ${ROOTFS_DIR}/usr/local/frc/include && tar xf -"
+#hal
 sh -c "cd ${EXTRACT_DIR}/allwpilib/hal/src/main/native/include && tar cf - ." | \
     sh -c "cd ${ROOTFS_DIR}/usr/local/frc/include && tar xf -"
+#ntcore
+sh -c "cd ${EXTRACT_DIR}/allwpilib/ntcore/src/main/native/include && tar cf - ." | \
+    sh -c "cd ${ROOTFS_DIR}/usr/local/frc/include && tar xf -"
+#wpilibc
+sh -c "cd ${EXTRACT_DIR}/allwpilib/wpilibc/src/main/native/include && tar cf - ." | \
+    sh -c "cd ${ROOTFS_DIR}/usr/local/frc/include && tar xf -"
+#wpimath + drake, eigen, gcem
 sh -c "cd ${EXTRACT_DIR}/allwpilib/wpimath/src/main/native/include && tar cf - ." | \
     sh -c "cd ${ROOTFS_DIR}/usr/local/frc/include && tar xf -"
-sh -c "cd ${EXTRACT_DIR}/allwpilib/wpimath/src/main/native/eigeninclude && tar cf - ." | \
+sh -c "cd ${EXTRACT_DIR}/allwpilib/wpimath/src/main/native/thirdparty/eigen/include && tar cf - ." | \
     sh -c "cd ${ROOTFS_DIR}/usr/local/frc/include && tar xf -"
-sh -c "cd ${EXTRACT_DIR}/allwpilib/wpilibc/src/main/native/include && tar cf - ." | \
+sh -c "cd ${EXTRACT_DIR}/allwpilib/wpimath/src/main/native/thirdparty/drake/include && tar cf - ." | \
+    sh -c "cd ${ROOTFS_DIR}/usr/local/frc/include && tar xf -"
+sh -c "cd ${EXTRACT_DIR}/allwpilib/wpimath/src/main/native/thirdparty/gcem/include && tar cf - ." | \
+    sh -c "cd ${ROOTFS_DIR}/usr/local/frc/include && tar xf -"
+#wpinet + uv, tcpsockets
+sh -c "cd ${EXTRACT_DIR}/allwpilib/wpinet/src/main/native/include && tar cf - ." | \
+    sh -c "cd ${ROOTFS_DIR}/usr/local/frc/include && tar xf -"
+sh -c "cd ${EXTRACT_DIR}/allwpilib/wpinet/src/main/native/thirdparty/libuv/include && tar cf - ." | \
+    sh -c "cd ${ROOTFS_DIR}/usr/local/frc/include && tar xf -"
+sh -c "cd ${EXTRACT_DIR}/allwpilib/wpinet/src/main/native/thirdparty/tcpsockets/include && tar cf - ." | \
+    sh -c "cd ${ROOTFS_DIR}/usr/local/frc/include && tar xf -"
+#wpiutil + fmt, ghc, json, llvm, memory, mpack, sigslot
+sh -c "cd ${EXTRACT_DIR}/allwpilib/wpiutil/src/main/native/include && tar cf - ." | \
+    sh -c "cd ${ROOTFS_DIR}/usr/local/frc/include && tar xf -"
+sh -c "cd ${EXTRACT_DIR}/allwpilib/wpiutil/src/main/native/thirdparty/fmtlib/include && tar cf - ." | \
+    sh -c "cd ${ROOTFS_DIR}/usr/local/frc/include && tar xf -"
+sh -c "cd ${EXTRACT_DIR}/allwpilib/wpiutil/src/main/native/thirdparty/ghc/include && tar cf - ." | \
+    sh -c "cd ${ROOTFS_DIR}/usr/local/frc/include && tar xf -"
+sh -c "cd ${EXTRACT_DIR}/allwpilib/wpiutil/src/main/native/thirdparty/json/include && tar cf - ." | \
+    sh -c "cd ${ROOTFS_DIR}/usr/local/frc/include && tar xf -"
+sh -c "cd ${EXTRACT_DIR}/allwpilib/wpiutil/src/main/native/thirdparty/llvm/include && tar cf - ." | \
+    sh -c "cd ${ROOTFS_DIR}/usr/local/frc/include && tar xf -"
+sh -c "cd ${EXTRACT_DIR}/allwpilib/wpiutil/src/main/native/thirdparty/memory/include && tar cf - ." | \
+    sh -c "cd ${ROOTFS_DIR}/usr/local/frc/include && tar xf -"
+sh -c "cd ${EXTRACT_DIR}/allwpilib/wpiutil/src/main/native/thirdparty/mpack/include && tar cf - ." | \
+    sh -c "cd ${ROOTFS_DIR}/usr/local/frc/include && tar xf -"
+sh -c "cd ${EXTRACT_DIR}/allwpilib/wpiutil/src/main/native/thirdparty/sigslot/include && tar cf - ." | \
     sh -c "cd ${ROOTFS_DIR}/usr/local/frc/include && tar xf -"
 
 # executables (use static build to ensure they don't break)
@@ -302,7 +333,13 @@ ln -sf ../frc/include "${ROOTFS_DIR}/usr/local/frc-static/include"
 rm -rf "${ROOTFS_DIR}/usr/local/frc-static/python"
 
 # fix up frc-static opencv pkgconfig Libs.private
-sed -i -e 's, -L/pi-gen[^ ]*,,g' "${ROOTFS_DIR}/usr/local/frc-static/lib/pkgconfig/opencv.pc"
+sed -i -e 's, -L/pi-gen[^ ]*,,g' "${ROOTFS_DIR}/usr/local/frc-static/lib/pkgconfig/opencv.pc"   #issue
+
+echo "************************"
+pushd "${ROOTFS_DIR}/usr/local"
+ls -l -R
+popd
+echo "************************"
 
 popd
 
