@@ -23,4 +23,4 @@ cmake
 python3
 ant
 sudo
-java:openjdk-17-jdk
+java:openjdk-11-jdk
