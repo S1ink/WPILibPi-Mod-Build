@@ -12,7 +12,7 @@ RUN apt-get -y update && \
         build-essential cmake python3 python3-distutils python3-jinja2 ant sudo openjdk-17-jdk \
     && rm -rf /var/lib/apt/lists/*
 RUN echo "deb http://deb.debian.org/debian testing main non-free contrib" >> /etc/apt/sources.list &&  apt-get -y update && \
-        apt-get -y install --no-install-recommends g++-11 && \
+        apt-get -y install --no-install-recommends g++-11-arm-linux-gnueabihf && \
     sed -i '$d' /etc/apt/sources.list && apt-get -y update
 
 COPY . /pi-gen/
