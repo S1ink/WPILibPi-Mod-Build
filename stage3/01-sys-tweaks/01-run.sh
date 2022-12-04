@@ -135,6 +135,11 @@ tar xzf ${DOWNLOAD_DIR}/armhf-raspi-bullseye-*.tgz
 export PATH=${WORK_DIR}/raspi-bullseye/bin:${PATH}
 popd
 
+export RPI_CROSS_PREFIX=arm-linux-gnueabihf     # armv6-bullseye-linux-gnueabihf for downloaded toolchain
+export RPI_CROSS_VERSION=11
+export RPI_CROSS_CXX=${RPI_CROSS_PREFIX}-g++-${RPI_CROSS_VERSION}
+export RPI_CROSS_CC=${RPI_CROSS_PREFIX}-gcc-${RPI_CROSS_VERSION}
+
 export PKG_CONFIG_DIR=
 export PKG_CONFIG_LIBDIR=${ROOTFS_DIR}/usr/lib/arm-linux-gnueabihf/pkgconfig:${ROOTFS_DIR}/usr/lib/pkgconfig:${ROOTFS_DIR}/usr/share/pkgconfig
 export PKG_CONFIG_SYSROOT_DIR=${ROOTFS_DIR}
@@ -374,7 +379,7 @@ sh -c 'tar cf - cscore' | \
 touch "${ROOTFS_DIR}/usr/local/lib/python3.9/dist-packages/cscore/_init_cscore.py"
 
 # build module
-armv6-bullseye-linux-gnueabihf-g++ \
+${RPI_CROSS_CXX} \
     --sysroot=${ROOTFS_DIR} \
     -g -O -Wall -fvisibility=hidden -shared -fPIC -std=c++17 \
     -o "${ROOTFS_DIR}/usr/local/lib/python3.9/dist-packages/_cscore.cpython-39-arm-linux-gnueabihf.so" \
@@ -409,9 +414,9 @@ rm -rf "${EXTRACT_DIR}/pixy2/build"
 # Split debug info
 
 split_debug () {
-    armv6-bullseye-linux-gnueabihf-objcopy --only-keep-debug $1 $1.debug
-    armv6-bullseye-linux-gnueabihf-strip -g $1
-    armv6-bullseye-linux-gnueabihf-objcopy --add-gnu-debuglink=$1.debug $1
+    ${RPI_CROSS_PREFIX}-objcopy --only-keep-debug $1 $1.debug
+    ${RPI_CROSS_PREFIX}-strip -g $1
+    ${RPI_CROSS_PREFIX}-objcopy --add-gnu-debuglink=$1.debug $1
 }
 
 split_debug_so () {

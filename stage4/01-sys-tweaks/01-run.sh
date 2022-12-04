@@ -30,21 +30,21 @@ export PKG_CONFIG_SYSROOT_DIR=${ROOTFS_DIR}
 
 # setuidgids
 pushd setuidgids
-make CC=armv6-bullseye-linux-gnueabihf-gcc
+make CC=${RPI_CROSS_CC}
 install -m 755 setuidgids "${ROOTFS_DIR}/usr/local/bin/"
 
 popd
 
 # multiCameraServer
 pushd multiCameraServer
-make CXX=armv6-bullseye-linux-gnueabihf-g++
+make CXX=${RPI_CROSS_CXX}
 install -m 755 multiCameraServer "${ROOTFS_DIR}/usr/local/frc/bin/"
 
 popd
 
 # configServer
 pushd configServer
-make CXX=armv6-bullseye-linux-gnueabihf-g++
+make CXX=${RPI_CROSS_CXX}
 install -m 755 configServer "${ROOTFS_DIR}/usr/local/sbin/"
 
 popd
