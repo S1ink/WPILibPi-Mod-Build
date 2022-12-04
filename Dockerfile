@@ -9,8 +9,9 @@ RUN apt-get -y update && \
         quilt coreutils qemu-user-static debootstrap zerofree zip dosfstools \
         libarchive-tools libcap2-bin rsync grep udev xz-utils curl xxd file kmod bc\
         binfmt-support ca-certificates qemu-utils kpartx fdisk gpg \
-        build-essential g++-10-arm-linux-gnueabihf cmake python3 python3-distutils python3-jinja2 ant sudo openjdk-17-jdk \
+        build-essential cmake python3 python3-distutils python3-jinja2 ant sudo openjdk-17-jdk \
     && rm -rf /var/lib/apt/lists/*
+# g++-10-arm-linux-gnueabihf
 
 COPY . /pi-gen/
 
