@@ -1,5 +1,4 @@
 cmake
-g++-11-arm-linux-gnueabihf
 libpython3.9-minimal
 libpython3.9-dev
 python3.9-minimal
