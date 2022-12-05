@@ -20,6 +20,10 @@ sh -c "cd ${BASE_DIR}/deps && tar cf - tools" | \
 # Build tools
 #
 #export PATH=${WORK_DIR}/raspi-bullseye/bin:${PATH}
+echo "**********************************************************"
+echo "RPI C cross compiler variable: ${RPI_CROSS_CC}"
+echo "RPI C++ cross compiler variable: ${RPI_CROSS_CXX}"
+echo "**********************************************************"
 
 pushd "${STAGE_WORK_DIR}/tools"
 
@@ -30,21 +34,21 @@ export PKG_CONFIG_SYSROOT_DIR=${ROOTFS_DIR}
 
 # setuidgids
 pushd setuidgids
-make CC=${RPI_CROSS_CC}
+make CC=arm-linux-gnueabihf-gcc-10  # ${RPI_CROSS_CC}
 install -m 755 setuidgids "${ROOTFS_DIR}/usr/local/bin/"
 
 popd
 
 # multiCameraServer
 pushd multiCameraServer
-make CXX=${RPI_CROSS_CXX}
+make CXX=arm-linux-gnueabihf-g++-10     # ${RPI_CROSS_CXX}
 install -m 755 multiCameraServer "${ROOTFS_DIR}/usr/local/frc/bin/"
 
 popd
 
 # configServer
 pushd configServer
-make CXX=${RPI_CROSS_CXX}
+make CXX=arm-linux-gnueabihf-g++-10     # ${RPI_CROSS_CXX}
 install -m 755 configServer "${ROOTFS_DIR}/usr/local/sbin/"
 
 popd
@@ -90,10 +94,11 @@ done
 
 # update Makefile to use cross-compiler and point to local dependencies
 cat > cpp-multiCameraServer/Makefile.new << EOF
-CXX=${RPI_CROSS_CXX}
+CXX=arm-linux-gnueabihf-g++-10
 DEPS_CFLAGS=`pkg-config --cflags wpilibc | sed -e "s,${ROOTFS_DIR}/usr/local/frc/,,g"`
 DEPS_LIBS=`pkg-config --libs wpilibc | sed -e "s,${ROOTFS_DIR}/usr/local/frc/,,g"`
 EOF
+# ${RPI_CROSS_CXX} ^
 sed -e '/^DEPS_/d' cpp-multiCameraServer/Makefile >> cpp-multiCameraServer/Makefile.new
 mv cpp-multiCameraServer/Makefile.new cpp-multiCameraServer/Makefile
 
