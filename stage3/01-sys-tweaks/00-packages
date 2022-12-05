@@ -13,4 +13,3 @@ pigpio
 python-pigpio
 python3-pigpio
 python3-tflite-runtime
-g++-10-arm-linux-gnueabihf
