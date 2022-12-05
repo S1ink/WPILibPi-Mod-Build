@@ -23,7 +23,7 @@ sh -c "cd ${BASE_DIR}/deps && tar cf - tools" | \
 
 pushd "${STAGE_WORK_DIR}/tools"
 
-export CXXFLAGS="-std=c++17 --sysroot=${ROOTFS_DIR} -Wl,-rpath -Wl,${ROOTFS_DIR}/opt/vc/lib"
+export CXXFLAGS="-std=c++20 --sysroot=${ROOTFS_DIR} -Wl,-rpath -Wl,${ROOTFS_DIR}/opt/vc/lib"
 export PKG_CONFIG_DIR=
 export PKG_CONFIG_LIBDIR=${ROOTFS_DIR}/usr/lib/arm-linux-gnueabihf/pkgconfig:${ROOTFS_DIR}/usr/lib/pkgconfig:${ROOTFS_DIR}/usr/share/pkgconfig:${ROOTFS_DIR}/usr/local/frc-static/lib/pkgconfig
 export PKG_CONFIG_SYSROOT_DIR=${ROOTFS_DIR}
@@ -90,7 +90,7 @@ done
 
 # update Makefile to use cross-compiler and point to local dependencies
 cat > cpp-multiCameraServer/Makefile.new << EOF
-CXX=arm-linux-gnueabihf-g++-10
+CXX=${RPI_CROSS_CXX}
 DEPS_CFLAGS=`pkg-config --cflags wpilibc | sed -e "s,${ROOTFS_DIR}/usr/local/frc/,,g"`
 DEPS_LIBS=`pkg-config --libs wpilibc | sed -e "s,${ROOTFS_DIR}/usr/local/frc/,,g"`
 EOF

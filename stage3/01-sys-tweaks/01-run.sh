@@ -135,8 +135,10 @@ tar xzf ${DOWNLOAD_DIR}/armhf-raspi-bullseye-*.tgz
 export PATH=${WORK_DIR}/raspi-bullseye/bin:${PATH}
 popd
 
+sudo apt-get -y install g++-10-arm-linux-gnueabihf
+
 export RPI_CROSS_PREFIX=arm-linux-gnueabihf     # armv6-bullseye-linux-gnueabihf for downloaded toolchain
-export RPI_CROSS_VERSION=11
+export RPI_CROSS_VERSION=10
 export RPI_CROSS_CXX=${RPI_CROSS_PREFIX}-g++-${RPI_CROSS_VERSION}
 export RPI_CROSS_CC=${RPI_CROSS_PREFIX}-gcc-${RPI_CROSS_VERSION}
 
