@@ -369,28 +369,28 @@ EOF
 # this build is pretty cpu-intensive, so we don't want to build it in a chroot,
 # and setup.py doesn't support cross-builds, so build it manually
 #
-pushd ${EXTRACT_DIR}/robotpy-cscore
+# pushd ${EXTRACT_DIR}/robotpy-cscore
 
-# install Python sources
-sh -c 'tar cf - cscore' | \
-    sh -c "cd ${ROOTFS_DIR}/usr/local/lib/python3.9/dist-packages && tar xf -"
+# # install Python sources
+# sh -c 'tar cf - cscore' | \
+#     sh -c "cd ${ROOTFS_DIR}/usr/local/lib/python3.9/dist-packages && tar xf -"
 
-# install blank _init_cscore.py
-touch "${ROOTFS_DIR}/usr/local/lib/python3.9/dist-packages/cscore/_init_cscore.py"
+# # install blank _init_cscore.py
+# touch "${ROOTFS_DIR}/usr/local/lib/python3.9/dist-packages/cscore/_init_cscore.py"
 
-# build module
-${RPI_CROSS_CXX} \
-    --sysroot=${ROOTFS_DIR} \
-    -g -O -Wall -fvisibility=hidden -shared -fPIC -std=c++17 \
-    -o "${ROOTFS_DIR}/usr/local/lib/python3.9/dist-packages/_cscore.cpython-39-arm-linux-gnueabihf.so" \
-    -Ipybind11/include \
-    `env PKG_CONFIG_LIBDIR=${PKG_CONFIG_LIBDIR}:${ROOTFS_DIR}/usr/local/frc/lib/pkgconfig pkg-config --cflags python3 cscore wpiutil` \
-    src/_cscore.cpp \
-    src/ndarray_converter.cpp \
-    `env PKG_CONFIG_LIBDIR=${PKG_CONFIG_LIBDIR}:${ROOTFS_DIR}/usr/local/frc/lib/pkgconfig pkg-config --libs cscore wpiutil` \
-    || exit 1
+# # build module
+# ${RPI_CROSS_CXX} \
+#     --sysroot=${ROOTFS_DIR} \
+#     -g -O -Wall -fvisibility=hidden -shared -fPIC -std=c++17 \
+#     -o "${ROOTFS_DIR}/usr/local/lib/python3.9/dist-packages/_cscore.cpython-39-arm-linux-gnueabihf.so" \
+#     -Ipybind11/include \
+#     `env PKG_CONFIG_LIBDIR=${PKG_CONFIG_LIBDIR}:${ROOTFS_DIR}/usr/local/frc/lib/pkgconfig pkg-config --cflags python3 cscore wpiutil` \
+#     src/_cscore.cpp \
+#     src/ndarray_converter.cpp \
+#     `env PKG_CONFIG_LIBDIR=${PKG_CONFIG_LIBDIR}:${ROOTFS_DIR}/usr/local/frc/lib/pkgconfig pkg-config --libs cscore wpiutil` \
+#     || exit 1
 
-popd
+# popd
 
 #
 # Build pixy2
