@@ -17,8 +17,8 @@
 #include <wpi/json.h>
 #include <wpi/raw_istream.h>
 #include <wpi/raw_ostream.h>
-#include <wpi/uv/Process.h>
-#include <wpi/uv/util.h>
+#include <wpinet/uv/Process.h>
+#include <wpinet/uv/util.h>
 
 namespace uv = wpi::uv;
 

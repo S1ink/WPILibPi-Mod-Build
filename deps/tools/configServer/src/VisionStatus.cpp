@@ -19,12 +19,12 @@
 #include <wpi/StringExtras.h>
 #include <wpi/json.h>
 #include <wpi/raw_ostream.h>
-#include <wpi/uv/Buffer.h>
-#include <wpi/uv/FsEvent.h>
-#include <wpi/uv/Pipe.h>
-#include <wpi/uv/Process.h>
-#include <wpi/uv/Timer.h>
-#include <wpi/uv/Work.h>
+#include <wpinet/uv/Buffer.h>
+#include <wpinet/uv/FsEvent.h>
+#include <wpinet/uv/Pipe.h>
+#include <wpinet/uv/Process.h>
+#include <wpinet/uv/Timer.h>
+#include <wpinet/uv/Work.h>
 
 namespace uv = wpi::uv;
 

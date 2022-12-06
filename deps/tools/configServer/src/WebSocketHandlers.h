@@ -7,7 +7,7 @@
 
 #include <string_view>
 
-#include <wpi/span.h>
+#include <span>
 
 namespace wpi {
 class WebSocket;
@@ -15,6 +15,6 @@ class WebSocket;
 
 void InitWs(wpi::WebSocket& ws);
 void ProcessWsText(wpi::WebSocket& ws, std::string_view msg);
-void ProcessWsBinary(wpi::WebSocket& ws, wpi::span<const uint8_t> msg);
+void ProcessWsBinary(wpi::WebSocket& ws, std::span<const uint8_t> msg);
 
 #endif  // RPICONFIGSERVER_WEBSOCKETHANDLERS_H_

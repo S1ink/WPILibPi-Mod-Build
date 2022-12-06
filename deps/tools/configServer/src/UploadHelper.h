@@ -11,7 +11,7 @@
 #include <string_view>
 
 #include <wpi/SmallString.h>
-#include <wpi/span.h>
+#include <span>
 
 class UploadHelper {
  public:
@@ -31,7 +31,7 @@ class UploadHelper {
 
   bool Open(std::string_view filename, bool text,
             std::function<void(std::string_view)> onFail);
-  void Write(wpi::span<const uint8_t> contents);
+  void Write(std::span<const uint8_t> contents);
   void Close();
 
  private:

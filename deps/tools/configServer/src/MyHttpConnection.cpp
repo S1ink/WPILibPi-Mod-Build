@@ -9,11 +9,11 @@
 
 #include <fmt/format.h>
 #include <wpi/SmallVector.h>
-#include <wpi/UrlParser.h>
+#include <wpinet/UrlParser.h>
 #include <wpi/fs.h>
 #include <wpi/raw_ostream.h>
-#include <wpi/raw_uv_ostream.h>
-#include <wpi/uv/Request.h>
+#include <wpinet/raw_uv_ostream.h>
+#include <wpinet/uv/Request.h>
 
 #include "WebSocketHandlers.h"
 

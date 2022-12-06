@@ -9,13 +9,13 @@
 #include <fmt/format.h>
 #include <wpi/raw_ostream.h>
 #include <wpi/raw_uv_ostream.h>
-#include <wpi/span.h>
+#include <span>
 #include <wpi/timestamp.h>
-#include <wpi/uv/Loop.h>
-#include <wpi/uv/Process.h>
-#include <wpi/uv/Tcp.h>
-#include <wpi/uv/Timer.h>
-#include <wpi/uv/Udp.h>
+#include <wpinet/uv/Loop.h>
+#include <wpinet/uv/Process.h>
+#include <wpinet/uv/Tcp.h>
+#include <wpinet/uv/Timer.h>
+#include <wpinet/uv/Udp.h>
 
 #include "MyHttpConnection.h"
 #include "NetworkSettings.h"
@@ -140,7 +140,7 @@ int main(int argc, char* argv[]) {
                static_cast<uint8_t>(ts & 0xff),
                static_cast<uint8_t>((*tcpSeq >> 8) & 0xff),
                static_cast<uint8_t>(*tcpSeq & 0xff)};
-          out << wpi::span<const uint8_t>(contents);
+          out << std::span<const uint8_t>(contents);
           out << std::string_view(buf.base, len);
           (*tcpSeq)++;
 

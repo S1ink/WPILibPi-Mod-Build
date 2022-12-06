@@ -20,10 +20,10 @@ sh -c "cd ${BASE_DIR}/deps && tar cf - tools" | \
 # Build tools
 #
 #export PATH=${WORK_DIR}/raspi-bullseye/bin:${PATH}
-echo "**********************************************************"
-echo "RPI C cross compiler variable: ${RPI_CROSS_CC}"
-echo "RPI C++ cross compiler variable: ${RPI_CROSS_CXX}"
-echo "**********************************************************"
+# echo "**********************************************************" # testing showed these vars were completely invalid :(
+# echo "RPI C cross compiler variable: ${RPI_CROSS_CC}"
+# echo "RPI C++ cross compiler variable: ${RPI_CROSS_CXX}"
+# echo "**********************************************************"
 
 pushd "${STAGE_WORK_DIR}/tools"
 
@@ -48,6 +48,10 @@ popd
 
 # configServer
 pushd configServer
+# pushd src   # attempt to patch wpi::span with updated c++20 std::span
+# sed -i -- 's/wpi::span/std::span/g' *
+# sed -i -- 's|wpi/span.h|span|g' *
+# popd
 make CXX=arm-linux-gnueabihf-g++-10     # ${RPI_CROSS_CXX}
 install -m 755 configServer "${ROOTFS_DIR}/usr/local/sbin/"
 

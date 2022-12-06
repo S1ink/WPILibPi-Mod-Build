@@ -12,13 +12,13 @@
 #include <fmt/format.h>
 #include <wpi/SmallVector.h>
 #include <wpi/StringExtras.h>
-#include <wpi/WebSocket.h>
+#include <wpinet/WebSocket.h>
 #include <wpi/json.h>
 #include <wpi/raw_ostream.h>
-#include <wpi/raw_uv_ostream.h>
-#include <wpi/uv/Loop.h>
-#include <wpi/uv/Pipe.h>
-#include <wpi/uv/Process.h>
+#include <wpinet/raw_uv_ostream.h>
+#include <wpinet/uv/Loop.h>
+#include <wpinet/uv/Pipe.h>
+#include <wpinet/uv/Process.h>
 
 #include "Application.h"
 #include "NetworkSettings.h"
@@ -55,7 +55,7 @@ static void SendWsText(wpi::WebSocket& ws, const wpi::json& j) {
   wpi::SmallVector<uv::Buffer, 4> toSend;
   wpi::raw_uv_ostream os{toSend, 4096};
   os << j;
-  ws.SendText(toSend, [](wpi::span<uv::Buffer> bufs, uv::Error) {
+  ws.SendText(toSend, [](std::span<uv::Buffer> bufs, uv::Error) {
     for (auto&& buf : bufs) buf.Deallocate();
   });
 }
@@ -533,7 +533,7 @@ void ProcessWsText(wpi::WebSocket& ws, std::string_view msg) {
   }
 }
 
-void ProcessWsBinary(wpi::WebSocket& ws, wpi::span<const uint8_t> msg) {
+void ProcessWsBinary(wpi::WebSocket& ws, std::span<const uint8_t> msg) {
   auto d = ws.GetData<WebSocketData>();
   if (d->upload) d->upload.Write(msg);
 }
