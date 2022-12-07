@@ -12,3 +12,4 @@ deps/tools/setuidgids/setuidgids
 *.o
 *.sw?
 *.debug
+.vscode/*

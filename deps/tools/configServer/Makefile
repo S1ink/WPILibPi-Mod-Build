@@ -1,6 +1,6 @@
 IMG_VERSION?=$(shell git describe)
-DEPS_CFLAGS?=$(shell pkg-config --cflags cscore wpiutil) -std=c++20
-DEPS_LIBS?=$(shell pkg-config --libs --static cscore wpiutil)
+DEPS_CFLAGS?=$(shell pkg-config --cflags cscore wpiutil wpinet) -std=c++20
+DEPS_LIBS?=$(shell pkg-config --libs --static cscore wpiutil wpinet)
 EXEC_HOME?=/home/pi
 FRC_JSON?=/boot/frc.json
 DHCPCD_CONF?=/boot/dhcpcd.conf

@@ -1,5 +1,5 @@
-DEPS_CFLAGS?=$(shell pkg-config --cflags cameraserver ntcore wpiutil) -std=c++20
-DEPS_LIBS?=$(shell pkg-config --libs --static cameraserver ntcore wpiutil)
+DEPS_CFLAGS?=$(shell pkg-config --cflags cameraserver ntcore wpiutil wpinet) -std=c++20
+DEPS_LIBS?=$(shell pkg-config --libs --static cameraserver ntcore wpiutil wpinet)
 
 .PHONY: all clean
 
