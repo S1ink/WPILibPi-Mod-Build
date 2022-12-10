@@ -10,46 +10,71 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - run: echo '::echo::on'
-      
-      - run: df -h
-      - run: |
+
+      - name: Cleanup Env
+        run: |
+          echo '************ Before ************'
+          df -h
+          echo '********************************'
           sudo swapoff -a
           sudo rm -f /swapfile
           sudo apt clean
           docker rmi $(docker image ls -aq)
-      - run: df -h
+          echo '************ After ************'
+          df -h
+          echo '*******************************'
 
-      - id: last-version
-        run: echo "::set-output name=ver::$(curl -s https://raw.githubusercontent.com/S1ink/WPILibPi-Mod-Build/main/.github/workflows/sync.yml | grep 'LAST_VERSION:.*' | tr -s ' ' | cut -d ' ' -f3)"
-      - id: date
-        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
-      - run: |
-          echo ${{ steps.last-version.outputs.ver }}
-          echo ${{ steps.date.outputs.date }}
+#      - id: last-version
+#        run: echo "ver=$(curl -s https://raw.githubusercontent.com/S1ink/WPILibPi-Mod-Build/main/.github/workflows/sync.yml | grep 'LAST_VERSION:.*' | tr -s ' ' | cut -d ' ' -f3)" >> $GITHUB_OUTPUT
 
       - name: Checkout
         uses: actions/checkout@main
         with:
-          ref: ${{ steps.last-version.output.ver }}
-      - run: git fetch --prune --unshallow
-        
-      - name: Get OpenCV Version
-        id: opencv-tag
-        run: echo "::set-output name=tag::$(grep 'https://github.com/opencv/opencv/archive/.*' stage3/01-sys-tweaks/01-run.sh | cut -d '/' -f7 | cut -d '.' -f1-3)"
-        
-      - run: sed -i -e 's!^.*https://github.com/opencv/opencv/archive/${{ steps.opencv-tag.outputs.tag }}.tar.gz!&\nwget -nc -nv -O opencv-contrib.tar.gz https://github.com/opencv/opencv_contrib/archive/${{ steps.opencv-tag.outputs.tag }}.tar.gz!' stage3/01-sys-tweaks/01-run.sh
-      - run: sed -i -e 's!tar xzf "${DOWNLOAD_DIR}/${{ steps.opencv-tag.outputs.tag }}.tar.gz"!&\ntar xzf "${DOWNLOAD_DIR}/opencv-contrib.tar.gz"!' stage3/01-sys-tweaks/01-run.sh
-      - run: sed -i -e 's!^.*cmake "${EXTRACT_DIR}/opencv-${{ steps.opencv-tag.outputs.tag }}".*.*!&\n\t-DOPENCV_EXTRA_MODULES_PATH=${EXTRACT_DIR}/opencv_contrib-${{ steps.opencv-tag.outputs.tag }}/modules/aruco \\!' stage3/01-sys-tweaks/01-run.sh
-      - run: cat stage3/01-sys-tweaks/01-run.sh
+          fetch-depth: 0
+#          ref: ${{ steps.last-version.output.ver }}
+#      - run: git fetch --prune --unshallow --tags
+
+      - name: Gather Parameters
+        id: parameters
+        run: |
+          echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+          echo "source-ref=$(git describe --tags --abbrev=0)" >> $GITHUB_OUTPUT
+          echo "opencv-tag=$(grep 'https://github.com/opencv/opencv/archive/.*' stage3/01-sys-tweaks/01-run.sh | cut -d '/' -f7 | cut -d '.' -f1-3)" >> $GITHUB_OUTPUT
+          echo "wpilib-ver=$(grep 'https://github.com/wpilibsuite/allwpilib/archive/.*' stage3/01-sys-tweaks/01-run.sh | cut -d '/' -f7 | cut -d '.' -f1-3)" >> $GITHUB_OUTPUT
+
+      - name: Validate Parameters
+        run: |
+          echo "Date: ${{ steps.parameters.outputs.date }}"
+          echo "Tag: ${{ steps.parameters.outputs.source-ref }}"
+          echo "WPILib Version: ${{ steps.parameters.outputs.wpilib-ver }}"
+          echo "OpenCV Version: ${{ steps.parameters.outputs.opencv-tag }}"
+
+#      - name: Get Date
+#        id: date
+#        run: echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_#OUTPUT
+#      - name: Get OpenCV Version
+#        id: opencv-tag
+#        run: echo "tag=$(grep 'https://github.com/opencv/opencv/archive/.*' stage3/01-sys-tweaks/01-run.sh | cut -d '/' -f7 | cut -d '.' -f1-3)" >> $GITHUB_#OUTPUT
+#      - name: Get WPILib Version
+#        id: wpilib-release
+#        run: echo "ver=$(grep 'https://github.com/wpilibsuite/allwpilib/archive/.*' stage3/01-sys-tweaks/01-run.sh | cut -d '/' -f7 | cut -d '.' -f1-3" >> $GITHUB_OUTPUT
+
+      - name: Add OpenCV Contrib
+        run: |
+          sed -i -e 's!^.*https://github.com/opencv/opencv/archive/${{ steps.parameters.outputs.opencv-tag }}.tar.gz!&\nwget -nc -nv -O opencv-contrib.tar.gz https://github.com/opencv/opencv_contrib/archive/${{ steps.parameters.outputs.opencv-tag }}.tar.gz!' stage3/01-sys-tweaks/01-run.sh
+          sed -i -e 's!tar xzf "${DOWNLOAD_DIR}/${{ steps.parameters.outputs.opencv-tag }}.tar.gz"!&\ntar xzf "${DOWNLOAD_DIR}/opencv-contrib.tar.gz"!' stage3/01-sys-tweaks/01-run.sh
+          sed -i -e 's!^.*cmake "${EXTRACT_DIR}/opencv-${{ steps.parameters.outputs.opencv-tag }}".*.*!&\n\t-DOPENCV_EXTRA_MODULES_PATH=${EXTRACT_DIR}/opencv_contrib-${{ steps.parameters.outputs.opencv-tag }}/modules/aruco \\!' stage3/01-sys-tweaks/01-run.sh
+#      - run: cat stage3/01-sys-tweaks/01-run.sh
       
-      - name: Install Deps & Docker Build
+      - name: Prepare Deps
         run: |
           sudo apt-get update
           sudo apt-get --no-install-recommends --no-install-suggests install -y binfmt-support qemu-user-static qemu-utils nbd-server nbd-client
           sudo modprobe -a binfmt_misc nbd
-          ls -l
           grep binfmt /proc/mounts
-          ./build-docker.sh
+
+      - name: Docker Build
+        run: ./build-docker.sh
           
       - name: Package C++ Deps
         run: |
@@ -73,10 +98,10 @@ jobs:
           artifacts: deploy/*.zip,deploy/examples/*.zip
           allowUpdates: true
           body: |
-            Build Date: ${{ steps.date.outputs.date }}
-            WPILibPi Version: ${{ steps.last-version.outputs.ver }}
-            OpenCV Version: ${{ steps.opencv-tag.outputs.tag }}
-          commit: main
+            Build Date: ${{ steps.parameters.outputs.date }}
+            WPILib Version: ${{ steps.parameters.outputs.wpilib-ver }}
+            OpenCV Version: ${{ steps.parameters.outputs.opencv-tag }}
+          commit: ${{ steps.parameters.outputs.source-ref }}
           prerelease: false
           tag: Latest-Deps
           
@@ -85,10 +110,5 @@ jobs:
         with:
           artifacts: deploy/*.zip,deploy/examples/*.zip
           body: |
-            Last Modified: ${{ steps.date.outputs.date }}
-          tag: ${{ steps.last-version.outputs.ver }}
-          
-          
-          
-        
-      
+            Last Modified: ${{ steps.parameters.outputs.date }}
+          tag: ${{ steps.parameters.outputs.source-ref }}
