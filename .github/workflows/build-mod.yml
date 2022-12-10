@@ -40,7 +40,7 @@ jobs:
           echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
           echo "source-ref=$(git describe --tags --abbrev=0)" >> $GITHUB_OUTPUT
           echo "opencv-tag=$(grep 'https://github.com/opencv/opencv/archive/.*' stage3/01-sys-tweaks/01-run.sh | cut -d '/' -f7 | cut -d '.' -f1-3)" >> $GITHUB_OUTPUT
-          echo "wpilib-ver=$(grep 'https://github.com/wpilibsuite/allwpilib/archive/.*' stage3/01-sys-tweaks/01-run.sh | cut -d '/' -f7 | cut -d '.' -f1-3" >> $GITHUB_OUTPUT
+          echo "wpilib-ver=$(grep 'https://github.com/wpilibsuite/allwpilib/archive/.*' stage3/01-sys-tweaks/01-run.sh | cut -d '/' -f7 | cut -d '.' -f1-3)" >> $GITHUB_OUTPUT
 
       - name: Validate Parameters
         run: |
