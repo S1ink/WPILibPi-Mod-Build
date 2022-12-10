@@ -13,32 +13,29 @@ jobs:
 
       - name: Cleanup Env
         run: |
-          echo '************ Before ************'
+          echo "Freeing up space..."
+          echo '********************** Before **********************'
           df -h
-          echo '********************************'
+          echo '****************************************************'
           sudo swapoff -a
           sudo rm -f /swapfile
           sudo apt clean
           docker rmi $(docker image ls -aq)
-          echo '************ After ************'
+          echo '********************** After **********************'
           df -h
-          echo '*******************************'
-
-#      - id: last-version
-#        run: echo "ver=$(curl -s https://raw.githubusercontent.com/S1ink/WPILibPi-Mod-Build/main/.github/workflows/sync.yml | grep 'LAST_VERSION:.*' | tr -s ' ' | cut -d ' ' -f3)" >> $GITHUB_OUTPUT
+          echo '***************************************************'
 
       - name: Checkout
         uses: actions/checkout@main
         with:
           fetch-depth: 0
-#          ref: ${{ steps.last-version.output.ver }}
-#      - run: git fetch --prune --unshallow --tags
 
       - name: Gather Parameters
         id: parameters
         run: |
           echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
           echo "source-ref=$(git describe --tags --abbrev=0)" >> $GITHUB_OUTPUT
+          echo "source-commit=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
           echo "opencv-tag=$(grep 'https://github.com/opencv/opencv/archive/.*' stage3/01-sys-tweaks/01-run.sh | cut -d '/' -f7 | cut -d '.' -f1-3)" >> $GITHUB_OUTPUT
           echo "wpilib-ver=$(grep 'https://github.com/wpilibsuite/allwpilib/archive/.*' stage3/01-sys-tweaks/01-run.sh | cut -d '/' -f7 | cut -d '.' -f1-3)" >> $GITHUB_OUTPUT
 
@@ -46,25 +43,15 @@ jobs:
         run: |
           echo "Date: ${{ steps.parameters.outputs.date }}"
           echo "Tag: ${{ steps.parameters.outputs.source-ref }}"
+          echo "Commit: ${{ steps.parameters.outputs.source-commit }}"
           echo "WPILib Version: ${{ steps.parameters.outputs.wpilib-ver }}"
           echo "OpenCV Version: ${{ steps.parameters.outputs.opencv-tag }}"
-
-#      - name: Get Date
-#        id: date
-#        run: echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_#OUTPUT
-#      - name: Get OpenCV Version
-#        id: opencv-tag
-#        run: echo "tag=$(grep 'https://github.com/opencv/opencv/archive/.*' stage3/01-sys-tweaks/01-run.sh | cut -d '/' -f7 | cut -d '.' -f1-3)" >> $GITHUB_#OUTPUT
-#      - name: Get WPILib Version
-#        id: wpilib-release
-#        run: echo "ver=$(grep 'https://github.com/wpilibsuite/allwpilib/archive/.*' stage3/01-sys-tweaks/01-run.sh | cut -d '/' -f7 | cut -d '.' -f1-3" >> $GITHUB_OUTPUT
 
       - name: Add OpenCV Contrib
         run: |
           sed -i -e 's!^.*https://github.com/opencv/opencv/archive/${{ steps.parameters.outputs.opencv-tag }}.tar.gz!&\nwget -nc -nv -O opencv-contrib.tar.gz https://github.com/opencv/opencv_contrib/archive/${{ steps.parameters.outputs.opencv-tag }}.tar.gz!' stage3/01-sys-tweaks/01-run.sh
           sed -i -e 's!tar xzf "${DOWNLOAD_DIR}/${{ steps.parameters.outputs.opencv-tag }}.tar.gz"!&\ntar xzf "${DOWNLOAD_DIR}/opencv-contrib.tar.gz"!' stage3/01-sys-tweaks/01-run.sh
           sed -i -e 's!^.*cmake "${EXTRACT_DIR}/opencv-${{ steps.parameters.outputs.opencv-tag }}".*.*!&\n\t-DOPENCV_EXTRA_MODULES_PATH=${EXTRACT_DIR}/opencv_contrib-${{ steps.parameters.outputs.opencv-tag }}/modules/aruco \\!' stage3/01-sys-tweaks/01-run.sh
-#      - run: cat stage3/01-sys-tweaks/01-run.sh
       
       - name: Prepare Deps
         run: |
@@ -101,7 +88,7 @@ jobs:
             Build Date: ${{ steps.parameters.outputs.date }}
             WPILib Version: ${{ steps.parameters.outputs.wpilib-ver }}
             OpenCV Version: ${{ steps.parameters.outputs.opencv-tag }}
-          commit: ${{ steps.parameters.outputs.source-ref }}
+          commit: ${{ steps.parameters.outputs.source-commit }}
           prerelease: false
           tag: Latest-Deps
           
