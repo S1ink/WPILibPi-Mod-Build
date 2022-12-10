@@ -152,7 +152,7 @@ if [ -z "${IMG_NAME}" ]; then
 fi
 
 export USE_QEMU="${USE_QEMU:-0}"
-export IMG_VERSION=${IMG_VERSION:-v2023-beta1}	#$(git describe)
+export IMG_VERSION=${IMG_VERSION:-$(git describe --tags --abbrev=0)}
 export IMG_DATE="${IMG_DATE:-"$(date +%Y-%m-%d)"}"
 export IMG_FILENAME="${IMG_FILENAME:-"${IMG_NAME}-${IMG_VERSION}_${IMG_DATE}"}"
 export ZIP_FILENAME="${ZIP_FILENAME:-"${IMG_NAME}_image-${IMG_VERSION}_${IMG_DATE}"}"

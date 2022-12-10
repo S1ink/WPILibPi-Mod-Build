@@ -8,6 +8,6 @@ libdir=${exec_prefix}/lib
 Name: wpilibc
 Description: WPILib Robotics Library
 Version: 2019.2.1
-Requires: cameraserver ntcore cscore wpiutil
+Requires: cameraserver ntcore cscore wpiutil wpinet
 Libs: -L${libdir} -lwpilibc -lwpiHal
 Cflags: -I${includedir}
