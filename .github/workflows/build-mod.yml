@@ -32,7 +32,7 @@ jobs:
         with:
           fetch-depth: 0
 #          ref: ${{ steps.last-version.output.ver }}
-      - run: git fetch --prune --unshallow --tags
+#      - run: git fetch --prune --unshallow --tags
 
       - name: Gather Parameters
         id: parameters
