@@ -61,9 +61,9 @@ jobs:
 
       - name: Add OpenCV Contrib
         run: |
-          sed -i -e 's!^.*https://github.com/opencv/opencv/archive/${{ ssteps.parameters.outputs.opencv-tag }}.tar.gz!&\nwget -nc -nv -O opencv-contrib.tar.gz https://github.com/opencv/opencv_contrib/archive/${{ steps.opencv-tag.outputs.tag }}.tar.gz!' stage3/01-sys-tweaks/01-run.sh
+          sed -i -e 's!^.*https://github.com/opencv/opencv/archive/${{ steps.parameters.outputs.opencv-tag }}.tar.gz!&\nwget -nc -nv -O opencv-contrib.tar.gz https://github.com/opencv/opencv_contrib/archive/${{ steps.parameters.outputs.opencv-tag }}.tar.gz!' stage3/01-sys-tweaks/01-run.sh
           sed -i -e 's!tar xzf "${DOWNLOAD_DIR}/${{ steps.parameters.outputs.opencv-tag }}.tar.gz"!&\ntar xzf "${DOWNLOAD_DIR}/opencv-contrib.tar.gz"!' stage3/01-sys-tweaks/01-run.sh
-          sed -i -e 's!^.*cmake "${EXTRACT_DIR}/opencv-${{ steps.parameters.outputs.opencv-tag }}".*.*!&\n\t-DOPENCV_EXTRA_MODULES_PATH=${EXTRACT_DIR}/opencv_contrib-${{ steps.opencv-tag.outputs.tag }}/modules/aruco \\!' stage3/01-sys-tweaks/01-run.sh
+          sed -i -e 's!^.*cmake "${EXTRACT_DIR}/opencv-${{ steps.parameters.outputs.opencv-tag }}".*.*!&\n\t-DOPENCV_EXTRA_MODULES_PATH=${EXTRACT_DIR}/opencv_contrib-${{ steps.parameters.outputs.opencv-tag }}/modules/aruco \\!' stage3/01-sys-tweaks/01-run.sh
 #      - run: cat stage3/01-sys-tweaks/01-run.sh
       
       - name: Prepare Deps
