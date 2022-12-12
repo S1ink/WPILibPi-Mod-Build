@@ -82,20 +82,23 @@ jobs:
       - name: Update Latest
         uses: ncipollo/release-action@main
         with:
-          artifacts: deploy/*.zip,deploy/examples/*.zip
+          prerelease: false
           allowUpdates: true
+          tag: Latest-Deps
+          commit: ${{ steps.parameters.outputs.source-commit }}
+          artifacts: deploy/*.zip,deploy/examples/*.zip
           body: |
             Build Date: ${{ steps.parameters.outputs.date }}
             WPILib Version: ${{ steps.parameters.outputs.wpilib-ver }}
             OpenCV Version: ${{ steps.parameters.outputs.opencv-tag }}
-          commit: ${{ steps.parameters.outputs.source-commit }}
-          prerelease: false
-          tag: Latest-Deps
           
       - name: Update Version
         uses: ncipollo/release-action@main
         with:
+          prerelease: false
+          allowUpdates: true
+          tag: ${{ steps.parameters.outputs.source-ref }}
+          commit: ${{ steps.parameters.outputs.source-commit }}
           artifacts: deploy/*.zip,deploy/examples/*.zip
           body: |
             Last Modified: ${{ steps.parameters.outputs.date }}
-          tag: ${{ steps.parameters.outputs.source-ref }}
