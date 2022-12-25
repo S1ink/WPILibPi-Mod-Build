@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
   
 env:
-  LAST_VERSION: null
+  LAST_VERSION: v2022.1.1
 
 jobs:
   get-latest:
