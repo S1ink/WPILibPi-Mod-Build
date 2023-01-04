@@ -51,7 +51,7 @@ wget -nc -nv \
 
 # allwpilib
 wget -nc -nv -O allwpilib.tar.gz \
-    https://github.com/wpilibsuite/allwpilib/archive/v2023.1.1-beta-7.tar.gz
+    https://github.com/wpilibsuite/allwpilib/archive/v2023.1.1.tar.gz
 #    h ttps://github.com/wpilibsuite/allwpilib/archive/v2023.1.1-beta-3.tar.gz
 
 # pynetworktables
