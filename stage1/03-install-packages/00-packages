@@ -1,1 +1,2 @@
-libraspberrypi-bin libraspberrypi0 raspi-config ca-certificates
+libraspberrypi-bin libraspberrypi0
+systemd-timesyncd

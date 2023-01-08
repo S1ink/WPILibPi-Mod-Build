@@ -39,4 +39,24 @@ dependencies_check()
 		echo "  sudo modprobe binfmt_misc"
 		exit 1
 	fi
+
+	# binfmt_misc_required=1
+
+	# case $(uname -m) in
+	# 	aarch64)
+	# 		binfmt_misc_required=0
+	# 		;;
+	# 	arm*)
+	# 		binfmt_misc_required=0
+	# 		;;
+	# esac
+
+	# if [[ "${binfmt_misc_required}" == "1" ]]; then
+	# 	if ! grep -q "/proc/sys/fs/binfmt_misc" /proc/mounts; then
+	# 		echo "Module binfmt_misc not loaded in host"
+	# 		echo "Please run:"
+	# 		echo "  sudo modprobe binfmt_misc"
+	# 		exit 1
+	# 	fi
+	# fi
 }

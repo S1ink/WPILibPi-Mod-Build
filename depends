@@ -17,6 +17,10 @@ file
 git
 lsmod:kmod
 bc
+qemu-nbd:qemu-utils
+kpartx
+gpg
+pigz
 pkg-config
 gcc:build-essential
 cmake
