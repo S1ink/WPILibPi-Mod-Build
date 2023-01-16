@@ -9,7 +9,7 @@ import time
 import sys
 
 from cscore import CameraServer, VideoSource, UsbCamera, MjpegServer
-from networktables import NetworkTablesInstance
+from ntcore import NetworkTableInstance, EventFlags
 
 #   JSON format:
 #   {
@@ -169,12 +169,11 @@ def readConfig():
 def startCamera(config):
     """Start running the camera."""
     print("Starting camera '{}' on {}".format(config.name, config.path))
-    inst = CameraServer.getInstance()
     camera = UsbCamera(config.name, config.path)
-    server = inst.startAutomaticCapture(camera=camera, return_server=True)
+    server = CameraServer.startAutomaticCapture(camera=camera)
 
     camera.setConfigJson(json.dumps(config.config))
-    camera.setConnectionStrategy(VideoSource.ConnectionStrategy.kKeepOpen)
+    camera.setConnectionStrategy(VideoSource.ConnectionStrategy.kConnectionKeepOpen)
 
     if config.streamConfig is not None:
         server.setConfigJson(json.dumps(config.streamConfig))
@@ -184,24 +183,29 @@ def startCamera(config):
 def startSwitchedCamera(config):
     """Start running the switched camera."""
     print("Starting switched camera '{}' on {}".format(config.name, config.key))
-    server = CameraServer.getInstance().addSwitchedCamera(config.name)
+    server = CameraServer.addSwitchedCamera(config.name)
 
-    def listener(fromobj, key, value, isNew):
-        if isinstance(value, float):
-            i = int(value)
-            if i >= 0 and i < len(cameras):
-              server.setSource(cameras[i])
-        elif isinstance(value, str):
-            for i in range(len(cameraConfigs)):
-                if value == cameraConfigs[i].name:
+    def listener(event):
+        data = event.data
+        if data is not None:
+            value = data.value.value()
+            if isinstance(value, int):
+                if value >= 0 and value < len(cameras):
+                    server.setSource(cameras[value])
+            elif isinstance(value, float):
+                i = int(value)
+                if i >= 0 and i < len(cameras):
                     server.setSource(cameras[i])
-                    break
+            elif isinstance(value, str):
+                for i in range(len(cameraConfigs)):
+                    if value == cameraConfigs[i].name:
+                        server.setSource(cameras[i])
+                        break
 
-    NetworkTablesInstance.getDefault().getEntry(config.key).addListener(
-        listener,
-        NetworkTablesInstance.NotifyFlags.IMMEDIATE |
-        NetworkTablesInstance.NotifyFlags.NEW |
-        NetworkTablesInstance.NotifyFlags.UPDATE)
+    NetworkTableInstance.getDefault().addListener(
+        NetworkTableInstance.getDefault().getEntry(config.key),
+        EventFlags.kImmediate | EventFlags.kValueAll,
+        listener)
 
     return server
 
@@ -214,13 +218,14 @@ if __name__ == "__main__":
         sys.exit(1)
 
     # start NetworkTables
-    ntinst = NetworkTablesInstance.getDefault()
+    ntinst = NetworkTableInstance.getDefault()
     if server:
         print("Setting up NetworkTables server")
         ntinst.startServer()
     else:
         print("Setting up NetworkTables client for team {}".format(team))
-        ntinst.startClientTeam(team)
+        ntinst.startClient4("wpilibpi")
+        ntinst.setServerTeam(team)
         ntinst.startDSClient()
 
     # start cameras
