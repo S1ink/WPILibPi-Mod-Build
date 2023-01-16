@@ -1,0 +1,78 @@
+name: Fork Sync
+on:
+  schedule:
+  - cron: "0 12 * * *"
+  workflow_dispatch:
+  
+env:
+  LAST_VERSION: null
+
+jobs:
+  get-latest:
+    runs-on: ubuntu-latest
+    outputs:
+      latest-tag: ${{ steps.latest-tag.outputs.tag }}
+      requires-sync: ${{ steps.sync.outputs.value }}
+    steps:
+      - run: echo '::echo::on'
+      - name: Get Latest WPILibPi Tag
+        id: latest-tag
+        run: echo "tag=$(curl -s https://api.github.com/repos/wpilibsuite/WPILibPi/releases/latest | jq '.tag_name' | sed 's/\"//g')" >> $GITHUB_OUTPUT
+      - name: Evaluate
+        id: sync
+        run: echo "value=${{ steps.latest-tag.outputs.tag != env.LAST_VERSION }}" >> $GITHUB_OUTPUT
+      - name: Confirm Status
+        run: |
+          echo "${{ steps.latest-tag.outputs.tag }}"
+          echo "${{ steps.sync.outputs.value }}"
+     
+# this is first because the replace script must come after
+  alternate:
+    needs: get-latest
+    if: ${{ needs.get-latest.outputs.requires-sync == 'false' }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo '::echo::on'
+      - uses: actions/checkout@main
+      - uses: rickstaa/action-create-tag@main
+        with:
+          tag: ${{ env.LAST_VERSION }}
+          force_push_tag: true
+          message: Update latest
+     
+  update:
+    needs: get-latest
+    if: ${{ needs.get-latest.outputs.requires-sync == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo '::echo::on'
+      - uses: actions/checkout@main
+        with:
+          token: ${{ secrets.WORKFLOW_ACCESS }}
+      - run: |
+          sed -i '0,/^.*LAST_VERSION:.*/s//  LAST_VERSION: ${{ needs.get-latest.outputs.latest-tag }}/' ./.github/workflows/sync.yml
+#          sed -i "0,/^.*if: needs.get-latest.outputs.latest-tag !=.*/s//    if: needs.get-latest.outputs.latest-tag != '${{ needs.get-latest.outputs.latest-tag }}'/" ./.github/workflows/sync.yml
+#          sed -i "0,/^.*if: needs.get-latest.outputs.latest-tag ==.*/s//    if: needs.get-latest.outputs.latest-tag == '${{ needs.get-latest.outputs.latest-tag }}'/" ./.github/workflows/sync.yml
+#          cat ./.github/workflows/sync.yml
+      - uses: stefanzweifel/git-auto-commit-action@master
+        with:
+          commit_message: ${{ env.LAST_VERSION }} --> ${{ needs.get-latest.outputs.latest-tag }}
+#          tagging_message: ${{ needs.get-latest.outputs.latest-tag }}
+
+  sync:
+    needs: [get-latest, update]
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo '::echo::on'
+      - uses: actions/checkout@main
+      - uses: aormsby/Fork-Sync-With-Upstream-action@main
+        with:
+          target_sync_branch: main
+          target_repo_token: ${{ secrets.GITHUB_TOKEN }}
+          upstream_sync_repo: wpilibsuite/WPILibPi
+          upstream_sync_branch: main
+      - uses: rickstaa/action-create-tag@main
+        with:
+          tag: ${{ needs.get-latest.outputs.latest-tag }}
+          force_push_tag: true
+          message: Sync with upstream
