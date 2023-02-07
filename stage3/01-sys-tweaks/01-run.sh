@@ -48,7 +48,7 @@ wget -nc -nv -O contrib-4.6.0.tar.gz \
 
 # allwpilib
 wget -nc -nv -O allwpilib.tar.gz \
-    https://github.com/wpilibsuite/allwpilib/archive/v2023.3.1.tar.gz
+    https://github.com/wpilibsuite/allwpilib/archive/v2023.3.2.tar.gz
 
 ## robotpy-build
 #wget -nc -nv -O robotpy-build.tar.gz \
