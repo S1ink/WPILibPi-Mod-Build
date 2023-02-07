@@ -1,11 +1,5 @@
 #!/bin/bash -e
 
-echo "**************************"
-pushd "/usr/bin"
-ls -l -r
-popd
-echo "**************************"
-
 # shellcheck disable=SC2119
 run_sub_stage()
 {

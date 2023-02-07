@@ -55,7 +55,11 @@ jobs:
           grep binfmt /proc/mounts
 
       - name: Docker Build
-        run: ./build-docker.sh
+        run: |
+          ls -all export-image/prerun.sh
+          chmod +x export-image/prerun.sh
+          ls -all export-image/prerun.sh
+          ./build-docker.sh
           
       - name: Package C++ Deps
         run: |
